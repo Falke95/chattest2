@@ -1,0 +1,399 @@
+<?php
+
+$options=' ENGINE=MYISAM CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci';
+if($dbss['cset']=='utf8'){$options=' ENGINE=MYISAM CHARACTER SET utf8 COLLATE utf8_general_ci';}
+
+if($int_version<18.12){
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vvm_on','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vvm_sz','1000000')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vvm_la','30')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vvm_lv','10')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vvm_ba','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vvm_bv','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vvm_rs','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vvm_us','5')");
+}
+
+if($int_version<19.01){
+$new_template=str_replace('.x_accent_bg{color:#[4]','.x_accent_bg{color:#[0]',$settings['style_template']);
+neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='$new_template' WHERE id='style_template'");
+}
+
+if($int_version<19.02){
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_social(id varchar(128) NOT NULL,userid integer NOT NULL,social char(2) NOT NULL,sA varchar(256) NOT NULL,sB varchar(256) NOT NULL,sC varchar(512) NOT NULL,sD varchar(512) NOT NULL)'.$options);
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('group_f','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('fb_appid','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('fb_r_url','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('fb_t_frm','index.php')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('rmb_unsent','1')");
+}
+
+if($int_version<19.04){
+$cronkey=substr(md5(time()),0,9);
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_scache(id varchar(16) NOT NULL,value mediumtext NOT NULL)'.$options);
+neutral_query('DELETE FROM '.$dbss['prfx']."_settings WHERE id='svgcache1' OR id='svgcache2' OR id='svgcache3' OR id='svgcache4' OR id='svgcache5' OR id='sticache1' OR id='sticache2' OR id='avt_cache'");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('crn_o','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('crn_g','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('crn_m','20')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('crn_d','20')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('crn_u','20')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('crn_k','$cronkey')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('sticache1','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('sticache2','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('avt_cache','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('svgcache1','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('svgcache2','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('svgcache3','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('svgcache4','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('svgcache5','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('svgcache6','')");
+require_once('admin/recache_as.inc');
+neutral_query("INSERT INTO ".$dbss['prfx']."_style VALUES(17,'')");
+neutral_query("UPDATE ".$dbss['prfx']."_settings SET VALUE = REPLACE(value,'.x_global{[3]}','.x_global{[3]} .x_blab{[17]}') WHERE id='style_template'");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('utf8_set','Arabic,Armenian,Bengali,Bopomofo,Braille,Buhid,Canadian_Aboriginal,Cherokee,Cyrillic,Devanagari,Ethiopic,Georgian,Greek,Gujarati,Gurmukhi,Han,Hangul,Hanunoo,Hebrew,Hiragana,Inherited,Kannada,Katakana,Khmer,Lao,Latin,Limbu,Malayalam,Mongolian,Myanmar,Ogham,Oriya,Runic,Sinhala,Syriac,Tagalog,Tagbanwa,TaiLe,Tamil,Telugu,Thaana,Thai,Tibetan,Yi')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('utf8_run','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('utf8_msg','Please choose another name! Numeric-only names and and names containing letters of different alphabets are not allowed.')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('badwords','')");
+}
+
+if($int_version<19.05){
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_jbox(id integer NOT NULL auto_increment PRIMARY KEY,name varchar(64) NOT NULL,enabled integer NOT NULL,roomid integer NOT NULL,ugroup integer NOT NULL,infinite integer NOT NULL,shuffle integer NOT NULL,gap integer NOT NULL,delay integer NOT NULL,cookielength integer NOT NULL,hremember integer NOT NULL,elements mediumtext NOT NULL,template text NOT NULL)'.$options);
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_rbox(id integer NOT NULL auto_increment PRIMARY KEY,name varchar(64) NOT NULL,enabled integer NOT NULL,pm integer NOT NULL,roomid integer NOT NULL,ugroup integer NOT NULL,keywords text NOT NULL,answers mediumtext NOT NULL)'.$options);
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('avsize','250')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('chaton','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('chatoff','Our chat is closed now...')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('rbox_sender','8000001:1:GodFather')");
+}
+
+if($int_version<19.06){
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_gbox(id integer NOT NULL auto_increment PRIMARY KEY,name varchar(64) NOT NULL,enabled integer NOT NULL,roomid integer NOT NULL,ugroup integer NOT NULL,pagesize integer NOT NULL,glocale char(2) NOT NULL,topic varchar(256) NOT NULL,keywords text NOT NULL)'.$options);
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_gifs(id integer NOT NULL auto_increment PRIMARY KEY,idgbox integer NOT NULL,seen integer NOT NULL,ggif varchar(256) NOT NULL,gmp4 varchar(256) NOT NULL)'.$options);
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('gbox_sender','8000003:1:GIFMaster')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('ptop','')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('pmlog_stop','86400')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('tns_length','200')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('tns_lowprv','0')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('meta_ref','same-origin')");
+}
+
+if($int_version<19.07){
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_pcache(ipaddr varchar(64) NOT NULL,proxy smallint NOT NULL,timestamp integer NOT NULL)'.$options);
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('ip2c','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('ip2hash','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('pg_on','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('pg_api_src','pg_iphub')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('pg_api_key','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('pg_timeout','5')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('pg_tcache','86400')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('pg_wlist','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('pg_failmsg','Please turn off your VPN and refresh.')");
+}
+
+if($int_version<19.10){
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('mute_period','300')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('show_thumbs','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('tips_login','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('tips_reg','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('tips_pass','')");
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_ban ADD ulevel smallint NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_ban ADD ban smallint NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_ban ADD aname varchar(64) NOT NULL');
+if($settings['ban_period']<7200 || $settings['ban_period']>64000000){
+neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='72000' WHERE id='ban_period'");}
+}
+
+if($int_version<19.11){
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_rooms ADD hidden smallint NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_rooms ADD `groups` text NOT NULL');
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_grules(id integer NOT NULL auto_increment PRIMARY KEY,description varchar(256) NOT NULL,scenario text NOT NULL,ugroup integer NOT NULL,zorder integer NOT NULL)'.$options);
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('roombgs','90')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('roombgl','8')");
+}
+
+if($int_version<19.12){
+if(strlen($settings['cookie_salt'])<42){ $csalt=rand_str(50); $rsalt=rand_str(40);
+neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='$csalt' WHERE id='cookie_salt'");
+neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='$rsalt' WHERE id='random_salt'");}
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_polls(id integer NOT NULL,vote integer NOT NULL,userid integer NOT NULL,ipaddr varchar(64) NOT NULL)'.$options);
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vote_seeres','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vote_change','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vote_ipaddr','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vote_colors','000,ba443e,c17d51,cca851,22865e,ad1457,0d47a1,74554d,6a1b9a,086269')");
+neutral_query('UPDATE '.$dbss['prfx'].'_settings SET value=100 WHERE id=\'svgtstamp\'');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_rooms CHANGE `groups` groupids varchar(256) NOT NULL');
+}
+
+if($int_version<20.01){
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('acpreadonly','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('genderlist','Male,Female')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('genderedit','1')");
+
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_uxtra ADD age smallint NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_uxtra ADD location varchar(128) NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_uxtra ADD gender varchar(128) NOT NULL');
+}
+
+if($int_version<20.03){
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('p2p_global','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('stun_svs','stun.stunprotocol.org:3478')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('ask_av','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('pingws','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('p2p_level','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('uf_order','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('sound1','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('sound2','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('sound3','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('sound4','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('sound5','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('sound6','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_scache VALUES('sound7','')");
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_ufake DROP timestamp');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_ufake ADD hour_begin smallint DEFAULT 0');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_ufake ADD hour_end smallint DEFAULT 24');
+}
+
+if($int_version<20.05){
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('customjs','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('w_ofile','/tmp/online')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('w_cache','120')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('w_cross','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('w_onlu','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('w_onla','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('w_stat','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('w_tten','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('w_last','0')");
+}
+
+if($int_version<20.07){
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('pholders','')");
+}
+
+if($int_version<20.09){
+$aboxkey=substr(md5(time()),0,9);
+neutral_query("UPDATE ".$dbss['prfx']."_messages SET attach=100 WHERE attach<0");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('abox_key','$aboxkey')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('abox_sender','8000004:1:AuntHedwig')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('abox_count','0')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('abox_dtt','1')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('geo_period','3600')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('geo_timeout','5')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('geo_center','35,33')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('geo_zoom_i','3')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('geo_zoom_m','13')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('geo_error','5')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('geo_grey','0')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('geo_max','50')");
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_geoloc(id integer NOT NULL,name varchar(64) NOT NULL,geolat float NOT NULL,geolon float NOT NULL,timestamp integer NOT NULL)'.$options);
+}
+
+if($int_version<20.10){
+
+$qui_icons='🍏,🍎,🍐,🍊,🍋,🍒,💦,🍉,🍇,🍓,🍒,🥭,🥥,🥦,🥑,🥝,🌽,🧄,🧅,🌹,🌴,🍀,🍄,💐,🌵,🌲,🌻,🌼,🌺,🍁,🐹,🐰,🦊,🐻,🐼,🐨,🦁,🐷,🐸,🙊,🐧,🐦,🦅,🦉,🐝,🦋,🐌,🐞,🦑,🦀,🐡,🐠,🐟,🦓,🐪,🦒,🐃,🦌,🐓,🦃,🦚,🦜,🦩,🕊,⭐,🚗,🚎,🚑,🚜,🚠,🚦';
+if($dbss['cset']=='utf8'){$qui_icons='★,✿,✽,❊,✤,⚘,♠,❤,♦,♣';}
+
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_qcats(id integer NOT NULL auto_increment PRIMARY KEY,value varchar(128) NOT NULL,enbl integer NOT NULL)'.$options);
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_qdata(id integer NOT NULL auto_increment PRIMARY KEY,catid integer NOT NULL,question text NOT NULL,aa varchar(256) NOT NULL,ab varchar(256) NOT NULL,ac varchar(256) NOT NULL,ad varchar(256) NOT NULL,correct char(1) NOT NULL)'.$options);
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_qres(id integer NOT NULL,userid integer NOT NULL,username varchar(64) NOT NULL,res integer NOT NULL,timestamp integer NOT NULL)'.$options);
+
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('qui_limit','120')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('qui_icons','$qui_icons')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('min_qstat','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('crn_q','20')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('defaultsnip','Hello!')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('fb_token','')");
+
+neutral_query("INSERT INTO ".$dbss['prfx']."_qcats VALUES(1,'History Europe',1)");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qcats VALUES(2,'Geography',1)");
+
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Who was the first monarch of Great Britain?','Queen Anne','Alfred The Great','William the Conqueror','','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Which sultan conquered Constantinople in 1453?','Suleiman the Magnificent','Osman I','Mehmed II','','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Which king united England and France?','Henry V','Richard I','None','','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Who was the first Holy Roman Emperor?','Julius Caesar','Charlemagne','Augustus','','B')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Who was the longest reigning Roman emperor?','Vespasian','Augustus','Tiberius','','B')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Which was the first country to adopt Christianity as a state religion?','The Roman Empire','The Byzantine Empire','The Kingdom of Armenia','','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'What was the largest city in Europe in the 10th century?','Constantinople','Rome','London','','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Who said -The die is cast-?','Napoleon','Julius Caesar','Hitler','','B')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Where is set Shakespeare\'s Romeo and Juliet?','Verona','Rome','Venice','','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Who\'s the god of war in the Greek mythology?','Apollo','Ares','Hermes','','B')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Which king of France signed the The Edict of Nantes?','Louis XIV','François I','Henry IV','','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Where did the battle of Waterloo take place?','England','Netherlands','France','','B')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Who was known as the Iron Chancellor?','Margaret Thatcher','Hermann Goering','Otto von Bismarck','','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Which legendary general is said to have sworn undying enmity against Rome?','Vercingetorix','Hannibal','Attila','','B')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Which officer was the first field marshal in history to be captured?','Friedrich Paulus','Erwin Rommel','Erich von Manstein','','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Which campaign was led by Philip II of France, Richard I of England and Frederick I.','Albigensian Crusade','Fourth Crusade','Third Crusade','','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'What Merovingian became king in the fifth century A.D.?','Arpad','Clovis','Ethelred','','B')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'In Ancient Rome, who were the Lares?','Household spirits of dead ancestors','The elite corps of the Roman army','The Muses','','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Who was the faithful wife of Odysseus who waited 20 years for his return from the Trojan War?','Penelope','Aspasia','Telemachus','','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,1,'Who started the movement of Protestant Reformation in Europe?','Martin Luther','John Calvin','Erasmus','','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'Which of these seas is largest?','Bering','Arabian Sea','Mediterranean','Gulf of Mexico','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'The tallest mountain peak in the US is Mount McKinley. The second tallest is:','Mount Saint Elias','Glacier Peak','Mount Washington','Gannett Peak','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'Which EU member is divided into a Greek and a Turkish part?','Greece','Slovenia','Cyprus','Bulgaria','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'Which EU member has a significant part of its territory below sea level?','Belgium','The Netherlands','Poland','Estonia','B')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'Which of the following countries and states shares its name with its capital city?','New York','Malta','Luxembourg','Oklahoma','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'Which one of these is not a Greek Mediterranean island?','Minorca','Lemnos','Crete','Santorini','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'Riga is the capital of which Baltic country?','Estonia','Lithuania','Belarus','Latvia','D')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'What famous square is located in Vatican City, the papal enclave within Rome?','Campo dei Fiori','St. Pauls Square','St. Peters Square','Piazza San Marco','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'What is the name of the island shared by Haiti and the Dominican Republic?','Haiti','Hispaniola','Isla Dominica','Carib Island','B')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'What portion of the Earth’s surface do oceans cover?','More than two thirds','One third','Half of it','One fourth','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'Montgomery is the capital city of this US state, and its largest city is Birmingham.','Arizona','Alaska','Arkansas','Alabama','D')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'The Himalayan range, part of which is Mount Everest, stretches across five different countries in Asia. Which of the following countries is not among them?','Israel','Bhutan','Pakistan','India','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'What river that flows through Spain and Portugal is the longest river on the Iberian Peninsula?','Guadiana','Duero','Guadalquivir','Tagus','D')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'Maryland derives its name from its Catholic founders, who named the state after which historic person?','Mary, Queen of Scots','Mary Magdalene','The Virgin Mary','Queen Henrietta Maria of France','D')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'Which country, Slovakia or Slovenia, used to be part of Yugoslavia?','Slovenia','Both','Slovakia','None of them','A')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'What sea borders Egypt to the east?','Black Sea','Yellow Sea','Mediterranean Sea','Red Sea','D')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'The Ottoman Empire used to rule over North Africa, the Middle East and south-eastern Europe. Which modern day country is the successor of the empire?','Israel','Saudi Arabia','Turkey','Egypt','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'The capital city of what country is called Quito?','Bolivia','Macedonia','Ecuador','Yemen','C')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'What is the name of the capital city of the U.S. state of Wyoming.','Boise','Des Moines','Salt Lake City','Cheyenne','D')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_qdata VALUES(NULL,2,'Which of these European countries shares a land border with Sweden?','Switzerland','Denmark','Lithuania','Norway','D')");
+}
+
+if($int_version<20.12){
+neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='' WHERE id='announce'");
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_online ADD avatar varchar(256) NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_online ADD pinfo varchar(256) NOT NULL');
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('force_av','1')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('landing_header','')");
+neutral_query('INSERT INTO '.$dbss['prfx']."_settings VALUES('landing_footer','')");
+neutral_query('DELETE FROM '.$dbss['prfx']."_settings WHERE id='mobile_effe'");
+}
+
+if($int_version<21.02){
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('bottomjs','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('splash','')");
+neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='.msg{margin-bottom:20px;min-width:200px;display:flex;clear:both} .avt{float:left;width:50px;height:50px;margin-right:10px}' WHERE id='msg_style'");
+}
+
+if($int_version<21.04){
+$b=explode(',',$settings['badwords']);$r=array();for($i=0;$i<count($b);$i++){$r[]='***';} $r=implode(',',$r);
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('badrepls','$r')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('blingon','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('blingint','20')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('crn_p','20')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('offmsg_del','1')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('helpdesk_usr','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('helpdesk_desc','')");
+if($settings['pmlog_stop']<86500){neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='432000' WHERE id='pmlog_stop'");}
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_bbox(id integer NOT NULL auto_increment PRIMARY KEY,name varchar(64) NOT NULL,fgc char(6) NOT NULL,bgc char(6) NOT NULL,blingkey char(20) NOT NULL,enabled smallint NOT NULL,inlist smallint NOT NULL,blingsuper smallint NOT NULL,timesec integer NOT NULL,bgcolor varchar(32) NOT NULL,sound varchar(256) NOT NULL,blingcode text NOT NULL,blingcss text NOT NULL)'.$options);
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_offmsg(id integer NOT NULL auto_increment PRIMARY KEY,userid integer NOT NULL,username varchar(64) NOT NULL,ugroup integer NOT NULL,touserid integer NOT NULL,offmessage text NOT NULL,timestamp integer NOT NULL,msgread smallint(6) NOT NULL)'.$options);
+neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='<div class=\"msg\"><img class=\"avt x_circle\" src=\"{AVATAR}\" alt=\"\"><div style=\"text-align:left\"><span class=\"chat_area_user g{GROUP}\">{NAME}</span> <span class=\"chat_area_time\">{TIME}</span><br><span class=\"tt{COLOR}\" style=\"word-break:break-word\">{TEXT}</span></div></div>' WHERE id='msg_template'");
+}
+
+if($int_version<21.07){
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_messages ADD mhash char(12) NOT NULL');
+neutral_query('UPDATE '.$dbss['prfx']."_messages SET mhash='1'");
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_uxtra ADD education varchar(128) NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_uxtra ADD occupation varchar(128) NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_uxtra ADD interests varchar(128) NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_uxtra ADD cover varchar(128) NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_uxtra ADD about text NOT NULL');
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('profile_templt','<div class=\"x_bcolor_z x_top_rounded\" style=\"padding:10px;text-align:left;color:#fff;border-bottom:8px solid rgba(0,0,0,.2);background-image:url(%COVER%);background-size:cover\"> <div style=\"padding:10px;background-color:rgba(0,0,0,.5)\"><img src=\"%IMAGE%\" alt=\"\" style=\"float:left;width:120px;height:120px;margin-right:10px\"> <b style=\"font-size:120%\">%NAME%</b><br><small>%GROUP%<br>%AGE% %GENDER% %LOCATION%</small><br style=\"clear:both\"></div></div> <div class=\"x_bcolor_y x_bottom_rounded\" style=\"font-size:90%;padding:15px;text-align:left;height:160px;overflow:auto\">%EDUCATION% %OCCUPATION% %INTERESTS%<br>%ABOUT%</div>')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('profile_covers','')");
+}
+
+if($int_version<21.09){
+$wsecretkey=rand_str(40);
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('unl_timeout','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('seo_page','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES ('stripe_apikey', '');");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES ('webhook_secret', '$wsecretkey');");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES ('shuffle_items', '1');");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES ('vipshop_info', 'Welcome to VIPSHOP! You can purchase VIP codes here. Select one and click BUY. A purchased VIP code can be applied only once.');");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES ('vipshop_title', 'VIPSHOP');");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES ('vipshop_theme', 'default');");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES ('success_msg', 'We appreciate your business. Your VIP code will be displayed very soon. There is no need to reload this page.');");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES ('cancel_msg', 'We are sorry but we cannot confirm your order.');");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES ('missing_msg', 'We are sorry but we cannot find your order. Please contact us.');");
+
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_groups ADD vlnk integer NOT NULL AFTER link');
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_vip(id integer NOT NULL auto_increment PRIMARY KEY,vsign varchar(6) NOT NULL,name varchar(64) NOT NULL,salt char(64) NOT NULL)'.$options);
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_vipusr(userid integer NOT NULL,username varchar(64) NOT NULL,vip integer NOT NULL,timestamp integer NOT NULL,expirestamp integer NOT NULL,token char(10) NOT NULL)'.$options);
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_vproducts(id integer NOT NULL auto_increment PRIMARY KEY,vipid integer NOT NULL,name varchar(64) NOT NULL,vdesc text NOT NULL,vlength integer NOT NULL,stripepriceid varchar(64) NOT NULL,infoprice varchar(32) NOT NULL,zorder integer NOT NULL)'.$options);
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_vorders(id integer NOT NULL auto_increment PRIMARY KEY,token char(40) NOT NULL,productid integer NOT NULL,pintent varchar(40) NOT NULL,pstatus integer NOT NULL,viptoken char(10) NOT NULL,vipcode varchar(200) NOT NULL,bname varchar(200) NOT NULL,bmail varchar(200) NOT NULL,ipaddr varchar(64) NOT NULL,timestamp integer NOT NULL)'.$options);
+}
+
+if($int_version<21.11){
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('customhlrp','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('customhchat','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('rsz_emoji','100')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('tinting_c','#333')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('tinting_o','#333')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('ban_order','1')");
+neutral_query('DELETE FROM '.$dbss['prfx'].'_ban WHERE ban<1');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_ban CHANGE id userid integer NOT NULL FIRST');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_ban ADD id integer NOT NULL auto_increment PRIMARY KEY FIRST');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_ban ADD breason varchar(256) NOT NULL AFTER aname');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_ban ADD initstamp integer NOT NULL AFTER ipaddr');
+}
+
+if($int_version<22.01){
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_users CHANGE quarantine vcode varchar(32) NOT NULL');
+neutral_query('ALTER TABLE '.$dbss['prfx'].'_users ADD phone varchar(20) NOT NULL AFTER email');
+neutral_query('DELETE FROM '.$dbss['prfx']."_settings WHERE id='reglog_delay'");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('verify','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('verify_subj','{LANG}')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('verify_mssg','{LANG}')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('preset_subj','{LANG}')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('preset_mssg','{LANG}')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_smtp_host','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_smtp_user','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_smtp_pass','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_smtp_from','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_smtp_auth','true')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_smtp_secu','tls')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_smtp_port','587')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_smtp_mail','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_smtp_more','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_blacklist','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vpm_passreset','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vcs_cs_usr','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vcs_cs_key','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vcs_sender','VerifySMS')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vcs_whitelist','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vcs_blacklist','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('clearscreen','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('mailchange','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('rqhints','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('multiavatar','0')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('stopwords','/me,/whois,/topic,/kick')");
+}
+
+if($int_version<22.04){
+$iceservers='{iceServers:[{urls:"turn:openrelay.metered.ca:80",username:"openrelayproject",credential: "openrelayproject",}, {urls:"turn:openrelay.metered.ca:443",username:"openrelayproject",credential:"openrelayproject",},],}';
+neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='$iceservers' WHERE id='stun_svs'");
+}
+
+if($int_version<22.10){
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('globalfont','')");
+}
+
+if($int_version<23.03){
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('dnmode','1')");
+}
+
+if($int_version<23.04){
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_gpt(id integer NOT NULL auto_increment PRIMARY KEY,name varchar(256) NOT NULL,enabled integer NOT NULL,uid integer NOT NULL,gid integer NOT NULL,keywords text NOT NULL,rplmsg text NOT NULL,sysmsg text NOT NULL)'.$options);
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('openai_token','')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('openai_model','gpt-3.5-turbo')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('openai_temperature','0.2')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('openai_max_tokens','500')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('openai_trigger','TGF,TheGodFather,GodFather')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('openai_min_length','5')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('openai_max_length','350')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('openai_timeout','15')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('openai_randoms','I am still here. Lurking in background...\nFor some reason I find some people moderately funny to hang out with.\nI usually do my utmost not to be angered or annoyed 😡 🤯 when I really feel angry and annoyed.\nChanging the topic... I know next to nothing about science or politics, but I do know a bit about 🕍 British history 👈. Test me, okay?\nPlease hold on, I just saw my mate ride off to choir practice on the back of that 🚲 bike.')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('openai_defmod','Keep it short and add a bit of sarcasm.\nMake your answer short and overly serious so that it sounds funny.')");
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('vip_signs','')");
+}
+
+if($int_version<24.01){
+neutral_query('CREATE TABLE '.$dbss['prfx'].'_ipc(ipslice varchar(16) NOT NULL,country_code char(2) NOT NULL,country_name varchar(64) NOT NULL,timestamp integer NOT NULL)'.$options);
+neutral_query("INSERT INTO ".$dbss['prfx']."_settings VALUES('iplocate_key','')");
+}
+
+// version update
+$forcereload=substr(md5($timestamp),0,9);
+neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='$forcereload' WHERE id='forcereload'");
+neutral_query('UPDATE '.$dbss['prfx']."_settings SET value='$version' WHERE id='version'");
+redirect('admin.php?ok='.$timestamp);
+
+?>

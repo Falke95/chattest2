@@ -1,0 +1,61 @@
+
+<input type="button" id="menu_button" title="ESC = <?php print $lang['menu'];?>" class="x_accent_bg pointer x_circle svg_menu" value="&nbsp;" onclick="show_hide()">
+<input type="button" id="bmrk_button" title="<?php print $lang['favs'];?>" class="x_bcolor_bg pointer x_circle svg_star" value="&nbsp;" onclick="bookmarks()">
+
+<div id="bmrk_menu" class="x_bcolor_bg round4">
+<div class="pointer" style="opacity:0.8;float:left;width:49%;margin-top:10px" onclick="add_bookmark()" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8"><?php print $lang['add'];?> <b>★</b></div>
+<div class="pointer" style="opacity:0.8;float:right;width:49%;margin-top:10px" onclick="edit_bookmarks()" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8"><?php print $lang['edit'];?></div>
+<br><hr style="margin:5px" class="x_overal"><div id="bmrk_box"></div>
+<div class="pointer x_accent_bg round4" onclick="de('bmrk_menu').style.display='none'" style="margin:20px 10px 10px 10px;padding:10px 0 10px 0"><?php print $lang['close'];?></div>
+</div>
+
+<div id="hidescreen_tran" class="x_bcolor_bg" onclick="show_hide()"></div>
+
+<div id="menu_box">
+<div style="padding-left:0;cursor:default">BlaB! AX <?php print $version;?></div>
+<p style="padding-left:10px">
+<span style="display:inline-block;width:40%;height:12px;background-color:#ddd;cursor:pointer;border-radius:5px 0 0 5px" onclick="cmode(1)"></span><span style="display:inline-block;width:40%;height:12px;background-color:#333;cursor:pointer;border-radius:0 5px 5px 0" onclick="cmode(0)"></span>
+</p>
+<div class="svg_dash" onclick="self.location.href='admin.php'"><?php print $lang['dash'];?></div>
+<div class="svg_stat" onclick="self.location.href='admin.php?q=stats'"><?php print $lang['stats'];?></div>
+<div class="svg_logs" onclick="self.location.href='admin.php?q=logs'"><?php print $lang['logs'];?></div>
+<div class="svg_sett" onclick="self.location.href='admin.php?q=settings'"><?php print $lang['settings'];?></div>
+<div class="svg_addt" onclick="self.location.href='admin.php?q=addt'"><?php print $lang['addt'];?></div>
+<div class="svg_styl" onclick="self.location.href='admin.php?q=style'"><?php print $lang['style'];?></div>
+<div class="svg_room" onclick="self.location.href='admin.php?q=rooms'"><?php print $lang['rooms'];?></div>
+<div class="svg_mssg" onclick="self.location.href='admin.php?q=messages'"><?php print $lang['messages'];?></div>
+<div class="svg_usrs" onclick="self.location.href='admin.php?q=users'"><?php print $lang['users'];?></div>
+<div class="svg_cron" onclick="self.location.href='admin.php?q=dbopt'"><?php print $lang['dbopt'];?></div>
+<div class="svg_vpro" onclick="self.location.href='admin.php?q=vpro'">AX/WS Pro</div>
+<div class="svg_exit" onclick="if(window.opener){self.close()}else{self.location.href='./'}"><?php print $lang['exit'];?></div>
+</div>
+
+<div id="hidescreen_prev" class="x_bcolor_bg" onclick="close_preview()"></div>
+<div id="preview" class="x_accent_bg"></div>
+
+<?php 
+$ok=0;
+if(isset($_GET['ok'])){$ok=(int)$_GET['ok'];}
+if(($timestamp-$ok)<2){ ?>
+<div id="sayok" class="x_overal" style="position:fixed;top:0;bottom:0;left:0;right:0;text-align:center;padding-top:50px">
+<div class="round4 x_bcolor_bg" style="margin:50px;padding:30px"><?php print $lang['form_ok'];?></div></div>
+<script> x=de('sayok'); setTimeout('x.style.display="none"',500) </script>
+<?php }?>
+
+
+<script>
+men=de('menu_box')
+hsc=de('hidescreen_tran');
+mpr=de('preview');
+hst=de('hidescreen_prev');
+men.style.display='none'
+
+document.onkeyup=function(event){if(event.keyCode==27){show_hide()}}
+document.addEventListener("touchstart", ttouch1)
+document.addEventListener("touchend", ttouch2)
+
+if(window.innerWidth>800){
+document.body.style.marginLeft='160px'
+men.style.display='block'}
+
+</script>

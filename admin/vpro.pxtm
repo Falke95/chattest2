@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><title>BlaB! AX/WS Pro</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="admin/<?php print $settings['acp_css'];?>">
+<script src="admin/admin.js"></script>
+</head>
+
+<body class="x_global x_overal">
+<div class="holder">
+<h2 onclick="self.location.href='admin.php'" class="pointer svg_sett">
+<span style="float:right;height:40px;width:40px" class="svg_upup"></span>
+BlaB! AX/WS Pro</h2>
+<hr>
+
+<p><img style="width:100%" src="incl/vpro1.jpg" alt=""></p>
+<h3>Integration</h3>
+<p><b>Free custom integration upon request!</b> Ready integration with Flarum, IPS Suite, Joomla, MyBB, phpBB3, Simple Machines, Vanilla, vBulletin, Woltlab Suite, WordPress, Xenforo. People registered and logged onto your forum/CMS enter the chat with their usernames directly, without a login prompt. </p>
+<div style="text-align:right">Easy to setup Facebook login: <span style="font-size:90%;color:#fff;background-color:#3B5998;display:inline-block;padding:5px;border-radius:2px;cursor:pointer">&nbsp;Continue with Facebook&nbsp;</span></div>
+<br><hr>
+
+<p><img style="width:100%" src="incl/vpro2.png" alt=""></p>
+<h3>User Groups / VIP Users</h3>
+<p>User groups with permissions - what your users can and cannot do - <b>26 different permissions</b>.  <b>Assign admins and moderators!</b> Guests go in a group with limited permissions. Import user groups from Flarum, IPS Suite, Joomla, MyBB, phpBB3, Simple Machines, Vanilla, vBulletin, Woltlab Suite, WordPress, Xenforo or a custom system. <b style="font-size:110%;color:#E91E63">💦 VIP Users</b> with elevated permissions and <b style="font-size:110%">🐸</b> emoji symbols before their names.</p><br><hr>
+
+<p><img style="width:100%" src="incl/vpro3.jpg" alt=""></p>
+<br><hr>
+
+<p><img style="width:100%" src="incl/vpro4.png" alt=""></p>
+<h3>File &amp; Media sharing</h3>
+<p>Share in chat any file including images, audio, video: <b>mp3</b> and <b>mp4</b> are recognized automatically and can be streamed. Share and watch <b>YouTube</b> &amp; <b>Vimeo</b> videos, post &amp; listen to <b>SoundCloud</b> and <b>MixCloud</b> tracks and playlists. Post a location on Google Maps or source code with highlighting. Create quizzes, polls and text streams.
+</p><br><hr>
+
+<p><img style="width:100%" src="incl/vpro5.jpg" alt=""></p>
+<br><hr>
+
+<h3>Machines</h3>
+<p><img style="width:100%" src="incl/vpro6.jpg" alt=""></p>
+<p><b style="color:#E91E63">Time Machine</b> displays messages and announcements at intervals. <b style="color:#FF9800">TheGodFather</b> scans public &amp; private messages and replies with predefined phrases on a keyword match.  <b style="color:#BA0095">Aunt Hedwig</b> triggered by IFTTT, Zapier, Microsoft Flow or any automation app delivers online content in chat - news, Facebook posts, Tweets, RSS, stock exchange info. <b style="color:#1E88E5">Bling Machine </b> displays in chat fullscreen animations, announcements and adverts.<br>&nbsp;</p>
+<br><hr>
+
+<p><img style="width:100%" src="incl/vpro7.jpg" alt=""></p>
+<br><hr>
+
+<p><img style="width:100%" src="incl/vpro8.jpg" alt=""></p>
+<br><hr>
+
+<a href="https://justblab.com" style="text-decoration:none" onclick="if(parent.length>0){return false}"><span class="round4 x_accent_bg" style="width:100%;font-weight:bold;height:50px;text-decoration:none;border-width:0;text-align:center;line-height:50px;display:block">JUSTBLAB.COM</span></a>
+
+</div>
+<?php include 'admin/menu.pxtm'; ?>
+</body></html>

@@ -1,0 +1,119 @@
+<?php
+
+if(is_writeable('pwa.webmanifest')){$pwawrite=1;$pwamanifeststate=$lang['pwa_wriok'];}
+else{$pwawrite=0;$pwamanifeststate=$lang['pwa_wrino'];}
+if(!is_file('pwa.webmanifest')){$pwawrite=0;$pwamanifeststate=$lang['pwa_wrine'];}
+
+$m=@file_get_contents('pwa.webmanifest');
+$m=@json_decode($m,true);
+
+$pwaname='OUR CHAT';
+$pwasname='CHAT';
+$pwadesc='OOR FRIENDLY WEB CHAT!';
+$pwadisplay='fullscreen';
+$pwathemec='#222222';
+$pwabgc='#eeeeee';
+
+if(isset($m['name'])){$pwaname=$m['name'];}
+if(isset($m['short_name'])){$pwasname=$m['short_name'];}
+if(isset($m['description'])){$pwadesc=$m['description'];}
+if(isset($m['display'])){$pwadisplay=$m['display'];}
+if(isset($m['theme_color'])){$pwathemec=$m['theme_color'];}
+if(isset($m['background_color'])){$pwabgc=$m['background_color'];}
+
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head><title>ACP: <?php print $lang['pwa'];?></title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="admin/<?php print $settings['acp_css'];?>">
+<script src="admin/admin.js?xyz=<?php print $settings['forcereload'];?>"></script>
+</head>
+
+<body class="x_global x_overal">
+<form action="admin.php" method="post" autocomplete="off" onsubmit="return check_pwaform()">
+<div class="holder">
+
+<h2 onclick="self.location.href='admin.php?q=addt'" class="pointer svg_sett">
+<span style="float:right;height:40px;width:40px" class="svg_upup"></span>
+<?php print $lang['pwa'];?></h2>
+<hr>
+
+<div><?php print $lang['pwa_desc1'];?> <?php print $lang['pwa_desc2'];?>
+<pre style="background-color:#eee;padding:8px;float:right;margin-top:10px"><?php print $pwamanifeststate;?></pre>
+</div>
+
+<br><hr>
+
+<div>
+<div class="x_bcolor_bg" style="float:left;margin-right:10px;padding:10px">
+<img src="app/512.png" style="width:120px;height:120px;float:left;border:1px solid #fff" alt="">
+<img src="app/256.png" style="width:80px;height:80px;float:left;border:1px solid #fff" alt="">
+<img src="app/128.png" style="width:40px;height:40px;float:left;border:1px solid #fff" alt="">
+</div><?php print $lang['pwa_icons'];?></div><br style="clear:both">
+<br><hr>
+
+<h3>pwa.webmanifest</h3>
+<br><hr>
+
+<div class="left">NAME</div>
+<div class="right">
+<input type="text" class="x_accent_bb s250" maxlength="32" name="pwaname" value="<?php print $pwaname;?>">
+</div>
+<br><hr>
+
+<div class="left">SHORT-NAME</div>
+<div class="right">
+<input type="text" class="x_accent_bb s250" maxlength="16" name="pwasname" value="<?php print $pwasname;?>">
+</div>
+<br><hr>
+
+<div class="left">DESCRIPTION</div>
+<div class="right">
+<input type="text" class="x_accent_bb s250" maxlength="128" name="pwadesc" value="<?php print $pwadesc;?>">
+</div>
+<br><hr>
+
+<div class="left">DISPLAY  (fullscreen/standalone)</div>
+<div class="right">
+<input type="text" class="x_accent_bb s250" maxlength="128" name="pwadisplay" value="<?php print $pwadisplay;?>">
+</div>
+<br><hr>
+
+<div class="left">THEME-COLOR</div>
+<div class="right">
+<input type="color" class="s250" name="pwathemec" value="<?php print $pwathemec;?>">
+</div>
+<br><hr>
+
+<div class="left">BACKGROUND-COLOR</div>
+<div class="right">
+<input type="color" class="s250" name="pwabgc" value="<?php print $pwabgc;?>">
+</div>
+<br><hr>
+
+
+<input type="submit" class="round4 x_bcolor_bg" style="width:100%;font-weight:bold;height:50px" value="<?php print $lang['submit'];?>">
+
+</div>
+</form>
+
+<script>
+
+function check_pwaform(){
+<?php if($pwawrite<1){print 'return false;';}?>
+f=document.forms[0]
+if(f.pwaname.value.trim().length<3){f.pwaname.value='OUR CHAT';return false}
+if(f.pwasname.value.trim().length<3){f.pwasname.value='OUR CHAT';return false}
+if(f.pwadesc.value.trim().length<3){f.pwadesc.value='OUR FRIENDLY CHAT';return false}
+if(f.pwadisplay.value.trim()!='fullscreen' && f.pwadisplay.value.trim()!='standalone'){f.pwadisplay.value='fullscreen';return false}
+return true}
+
+</script>
+
+<?php include 'admin/menu.pxtm'; ?>
+
+</body></html>

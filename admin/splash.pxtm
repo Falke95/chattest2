@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><title>ACP: <?php print $lang['splasht'];?></title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="admin/<?php print $settings['acp_css'];?>">
+<script src="admin/admin.js?xyz=<?php print $settings['forcereload'];?>"></script>
+</head>
+
+<body class="x_global x_overal">
+<form action="admin.php" method="post" autocomplete="off" onsubmit="return eform('splash')">
+<div class="holder">
+
+<h2 onclick="self.location.href='admin.php?q=addt'" class="pointer svg_sett">
+<span style="float:right;height:40px;width:40px" class="svg_upup"></span>
+<?php print $lang['splasht'];?></h2>
+<hr>
+
+<div><?php print $lang['splash1'];?><br><br><?php print $lang['splash2'];?><br>&nbsp;</div>
+
+<select class="x_accent_bb" style="width:100%;margin:20px 0 20px 0" onchange="self.location.href='admin.php?splashtemplate='+this.value">
+<option value="0"><?php print $lang['fromtmp'];?></option>
+<?php
+
+$htmlfiles = glob('splash/*.html');
+foreach ($htmlfiles as $value) {
+$curr=str_replace(['splash/','.html','.htm'],'',$value);
+$curr=abc123a($curr,''); print '<option value="'.$curr.'">'.$curr.'</option>';}
+
+?>
+</select>
+
+<textarea id="splash" name="splash" class="x_bcolor_bg" style="height:300px"><?php $x=htmlspecialchars($settings['splash']); print $x; ?></textarea>
+<br>
+
+<br><hr>
+
+<input type="submit" class="round4 x_bcolor_bg" style="width:100%;font-weight:bold;height:50px" value="<?php print $lang['submit'];?>">
+
+</div>
+</form>
+
+<?php include 'admin/menu.pxtm'; ?>
+
+</body></html>

@@ -1,0 +1,14 @@
+{
+    "name": "Our Chat",
+    "short_name": "Chat",
+    "description": "Our friendly web chat!",
+    "icons": [
+        {"src":"app/512.png","sizes":"512x512","type":"image/png","purpose": "maskable"}, 
+        {"src":"app/256.png","sizes":"256x256","type":"image/png","purpose": "any"},
+        {"src":"app/128.png","sizes":"128x128","type":"image/png","purpose": "any"}
+],
+    "start_url": "app/network.html",
+    "display": "standalone",
+    "theme_color": "#ffffff",
+    "background_color": "#1c4a74"
+}

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><title>ACP: <?php print $lang['badwords'];?></title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="admin/<?php print $settings['acp_css'];?>">
+<script src="admin/admin.js?xyz=<?php print $settings['forcereload'];?>"></script>
+</head>
+
+<body class="x_global x_overal">
+<form action="admin.php" method="post" autocomplete="off">
+<div class="holder">
+
+<h2 onclick="self.location.href='admin.php?q=settings'" class="pointer svg_sett">
+<span style="float:right;height:40px;width:40px" class="svg_upup"></span>
+<?php print $lang['badwords'];?></h2>
+<hr>
+
+<div><?php print $lang['bds_desc'];?><br>&nbsp;</div>
+<div style="text-align:center">
+<textarea name="badwords" class="x_bcolor_bg" style="width:45%;height:500px;text-align:right;line-height:180%;white-space:pre;overflow:auto"><?php $x=htmlspecialchars($settings['badwords']); $x=explode(',',$x);$x=implode("\r\n",$x);print $x; ?></textarea>
+<textarea name="badrepls" class="x_bcolor_bg" style="width:45%;height:500px;text-align:left;line-height:180%;white-space:pre;overflow:auto"><?php $x=htmlspecialchars($settings['badrepls']); $x=explode(',',$x);$x=implode("\r\n",$x);print $x; ?></textarea>
+</div>
+<br><hr>
+
+<input type="submit" class="round4 x_bcolor_bg" style="width:100%;font-weight:bold;height:50px" value="<?php print $lang['submit'];?>">
+
+</div>
+</form>
+
+<?php include 'admin/menu.pxtm'; ?>
+
+</body></html>

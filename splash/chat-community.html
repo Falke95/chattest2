@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+
+<title>chat::chat::chat</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="description" content="::: description :::">
+<meta name="keywords" content="keyword1, keyword2, keyword3">
+
+<link rel="preload" as="font" href="splash/chat-community.woff2" crossorigin="anonymous">
+
+<style>
+
+@font-face{font-family:titlefont;src:url(splash/chat-community.woff2) format('woff2')}
+
+
+body{color:#fff;background-color:#000000;padding:0;margin:0;background-image:url(backgrounds/couple1.jpg);background-size:cover;background-attachment:fixed;background-position:center;background-repeat:no-repeat}
+#initbg{position:fixed;top:0;left:0;right:0;bottom:0;filter:blur(22px);background-size:cover;background-attachment:fixed;background-position:center bottom;background-repeat:no-repeat;background-image:url(data:image/img+jpg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDACweISchHCwnJCcyLyw1Qm9IQj09QohhZlBvoY2ppp6Nm5ixx//Ysbzxv5ib3v/g8f//////rNX/////////////2wBDAS8yMkI6QoJISIL/t5u3////////////////////////////////////////////////////////////////////wgARCABAAGADAREAAhEBAxEB/8QAFwABAQEBAAAAAAAAAAAAAAAAAQACA//EABUBAQEAAAAAAAAAAAAAAAAAAAAB/9oADAMBAAIQAxAAAAHnFQRoiAhMAbiqlzZohMxERmtxmk0YEijdQS800YromFjQlDRABKWJkSI3GgAxSBAJARsIKDQxUEQmQNAaNxlcpGiFZCiKk//EABsQAAIDAQEBAAAAAAAAAAAAAAARARAgMCFB/9oACAEBAAEFAq97vjEbWflsWZqcxOXwY7QsoWFSJIgQqdsZ/8QAFREBAQAAAAAAAAAAAAAAAAAAUAH/2gAIAQMBAT8BQqH/xAAXEQEBAQEAAAAAAAAAAAAAAAARACBg/9oACAECAQE/AeUcMzr/xAAUEAEAAAAAAAAAAAAAAAAAAABg/9oACAEBAAY/AkH/xAAeEAACAwADAQEBAAAAAAAAAAAAARARMSAhQXFhgf/aAAgBAQABPyGPgTvlY2KLL6MLhfBLqW4G7RfBYNIaG4fUFHSGDZTGqNCVyXA/pnfpg4XK4KC4/Qk+iS0Zri42RRRTL0NWKnp0ZYKj0+hWvR0GzNNFD//aAAwDAQACAAMAAAAQcsAkgk81EG794kgDgX8YEHjbw0GHb4sAAkHsHtkEhAM/JCro/8QAGREAAwEBAQAAAAAAAAAAAAAAAAERQCAw/9oACAEDAQE/ENV8nkXi6IQaIQhBrn//xAAZEQACAwEAAAAAAAAAAAAAAAABEQAgMED/2gAIAQIBAT8Q6lzC6iotxkcBjoAXX//EACEQAQADAAICAwEBAQAAAAAAAAEAESExUUFxEGGRoYHw/9oACAEBAAE/EDGW1dxeXCUsnPNwdrZnUXcMgnkjXwS/wRS0n/MlDV17hpC/cEHc9P7KPcvriWdP7FziC2UPqLtfHgJ5HZgDcLcks6f2WdP7B6lU2XFcLG6DPbKnEZRfw2FxbLDmAHA+5Z0rZfB56jDpXqWZVQhzbNY/2IqJ4F38CMGW44wLbdR5LU5FpV75jtmDAlray4qu/Aq5y18XLMee5QrIp+BUqoO4ou4IqT6IgbKjlV7KAprmrgxZOQIJeGN1qeKo+x1KCKUxOJ/IHD+ShrU1IW+H5AFQqp2CmS6faAOUs7n/2Q==)}
+.initbg{animation: gohide .5s 1 ease-in forwards}
+@keyframes gohide{0%{opacity:100%}100%{opacity:0}}
+
+button{color:#fff;background-color:#333;min-width:280px;height:50px;line-height:50px;font-weight:700;font-size:14px;margin:4px;border-width:0;border-radius:5px;cursor:pointer;box-shadow:0 0 2px #000}
+button:hover{transform:scale(0.95,0.95)}
+
+input{color:#fff;background-color:#333;color:#fff;width:50px;height:50px;line-height:50px;text-align:center;border-radius:100%;border-width:0;font-weight:600;cursor:pointer;box-shadow:0 0 2px #000}
+input:hover{transform:scale(0.95,0.95)}
+
+#content{position:fixed;flex-wrap:wrap;align-items:center;bottom:0;left:0;right:0;color:#333;background-color:rgba(255,255,255,.8);padding:3%;box-shadow:0 -1px 3px #888;display:none}
+#content div{flex-grow:1}
+
+.ani2opa{animation: notrans 1s 1 ease-in forwards}
+@keyframes notrans{0%{opacity:0}100%{opacity:1}}
+
+</style>
+
+</head>
+
+<body onload="init()">
+<div id="initbg"></div>
+
+
+<div id="content">
+<div style="width:60%;text-align:center;font-family:titlefont;color:#7E6E62;font-size:30px">
+<span id="txt-00" style="display:none"></span>
+<span id="txt-en" style="display:none">Welcome to our online community! Learn a new language. Meet new people. Make new friends.</span>
+<span id="txt-fr" style="display:none">Bienvenue dans notre communaute en ligne! Pour rencontrer de nouvelles personnes. Pour se faire de nouveaux amis.</span>
+<span id="txt-es" style="display:none">Bienvenido a nuestra comunidad en linea. Aprender un nuevo lenguaje. Conocer gente nueva. Hacer nuevos amigos.</span>
+<span id="txt-de" style="display:none">Willkommen in unserer Online Community! Eine neue Sprache lernen. Neue Leute kennen lernen. Neue Freunde machen.</span>
+</div>
+<div style="text-align:center">
+<button id="butt_ent" style="background-color:#eee;color:#333" onclick="gochat()">CHAT</button>
+</div>
+</div>
+
+<div id="langbut" style="position:fixed;left:1%;display:none;opacity:0">
+<input type="button" style="background-color:#DB1F48" value="EN" onclick="change_txt(0);langtoline()">
+<input type="button" style="background-color:#D0B49F" value="DE" onclick="change_txt(1);langtoline()">
+<input type="button" style="background-color:#004369" value="FR" onclick="change_txt(2);langtoline()">
+<input type="button" style="background-color:#01949A" value="ES" onclick="change_txt(3);langtoline()">
+</div>
+
+<script>
+
+dtxt='txt-00'; langid=0; change_txt(0)
+lang=navigator.language;
+if(lang.search('de')>-1){change_txt(1)}
+if(lang.search('fr')>-1){change_txt(2)}
+if(lang.search('es')>-1){change_txt(3)}
+
+is_loggedin='%ISLOGGEDIN%';
+
+function gochat(){
+if(is_loggedin!=0){link2chat='index.php?nosplash'}
+else{link2chat='index.php?lang='+langid}
+self.location.href=link2chat}
+
+function change_txt(x){
+switch(x){
+case 1:  ntxt='txt-de';langid=1;btxt='Chatten';break
+case 2:  ntxt='txt-fr';langid=2;btxt='Tchat';break
+case 3:  ntxt='txt-es';langid=3;btxt='Chat';break
+default: ntxt='txt-en';langid=0;btxt='Chat';break}
+if(dtxt==ntxt){return}
+document.getElementById(dtxt).style.display='none'
+document.getElementById(ntxt).style.display='inline'
+document.getElementById(ntxt).className='ani2opa'
+document.getElementById('butt_ent').innerText=btxt
+dtxt=ntxt}
+
+
+function init(){
+document.getElementById('initbg').className='initbg'
+setTimeout("document.getElementById('initbg').style.display='none'",500)
+setTimeout("document.getElementById('content').style.display='flex';document.getElementById('content').className='ani2opa'",300)
+setTimeout('langtoline()',600)
+}
+
+function langtoline(){
+dh=document.getElementById('content').offsetHeight-15
+lb=document.getElementById('langbut')
+lb.style.bottom=dh+'px'
+lb.style.display='block'
+lb.className='ani2opa'}
+
+window.onresize=langtoline
+</script>
+</body>
+</html>

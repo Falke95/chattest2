@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+
+<title>Coffee &amp; Tea Lovers</title>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="description" content="::: description :::">
+<meta name="keywords" content="keyword1, keyword2, keyword3">
+
+<link rel="preload" as="font" href="splash/coffee-widget.woff" crossorigin="anonymous">
+
+<style>
+
+@font-face{font-family:titlefont;src:url(splash/coffee-widget.woff) format('woff')}
+body,div,button{font-size:16px;font-family:sans-serif}
+
+body{color:#fff;background-color:#444;padding:0;margin:0;background-image:url(backgrounds/coffee1.jpg);background-size:cover;background-attachment:fixed;background-position:center;background-repeat:no-repeat}
+#initbg{position:fixed;top:0;left:0;right:0;bottom:0;filter:blur(22px);background-size:cover;background-attachment:fixed;background-position:center bottom;background-repeat:no-repeat;background-image:url(data:image/img+jpg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wgARCAA2AGADAREAAhEBAxEB/8QAGAAAAwEBAAAAAAAAAAAAAAAAAAIDAQT/xAAWAQEBAQAAAAAAAAAAAAAAAAAAAQL/2gAMAwEAAhADEAAAAeWNGGCtR1IkqIotWiivC6ggFWglksyaXVzRbOYmB0DxoLNKK4GpEUwwsokSgDjLqRENFA0QBygy6IiGExKAApDDDASJ1gAAH//EABwQAAMAAwEBAQAAAAAAAAAAAAABEQIQIBIhA//aAAgBAQABBQLUJuJngaITcJyjLTROGNvf55GWZj9QxcMiJpL5Cv0+Ex8eoey/Wyl29t90une//8QAFBEBAAAAAAAAAAAAAAAAAAAAYP/aAAgBAwEBPwEp/8QAFxEBAQEBAAAAAAAAAAAAAAAAEQAgYP/aAAgBAgEBPwHBEcd//8QAGhAAAAcAAAAAAAAAAAAAAAAAESAhMDFAUP/aAAgBAQAGPwIsZCOja//EAB8QAQEAAwACAgMAAAAAAAAAAAEAEBEhMVEgQWGB8P/aAAgBAQABPyGBjFogCHsT6dtEqcAiEe5GcObkwMAyLe14ynd+Pd6vEu0kMt+r6dwMWv8AGCey589QGjiLB+7cDc2+zMPi39XVbIhN7jl+OFwbt5IcCPbR9yvy/9oADAMBAAIAAwAAABDskUMHyjLstgECSSReUCfv8Pk2N8v33mT3+SRP0+AAD//EABoRAAMBAQEBAAAAAAAAAAAAAAERIAAQMFD/2gAIAQMBAT8Qh555+BkWRTo8WXVR+D//xAAbEQACAwADAAAAAAAAAAAAAAABEQAQICEwQP/aAAgBAgEBPxCnZKLoGTsHS0KcduHnIyovX//EACMQAQACAgIBBQADAAAAAAAAAAEAESExQVFhEHGBkaEg0fD/2gAIAQEAAT8Qu8Bb4itte0Dg+4Y5qFul9pyT7myRFS3AtEz1FZqj9lEp6l2AonjgG4bVxuaihtgXhGWEOnPUPmAlVOCG1mBAlRf7L6ieuYq7g1qFo7PLiPgODtNzSQ+ZZuHUEEC1ognT5cQNy5apMTxfhENV9I45VOVlmJvsjW2PrYzuC0kQCRmqPeFYuXmUMsRQ6hM6d6uiDQUnlZa6z9xwoBYT5vdxVg5ucrMofTIIdko5Ub/zKuD39C3bLdy3v0TfmIOYM/qWNQgtu+yWcXPJFbf5f//Z)}
+.initbg{animation: gohide .5s 1 ease-in forwards}
+@keyframes gohide{0%{opacity:100%}100%{opacity:0}}
+
+button{color:#fff;padding:0 40px 0 40px;height:50px;line-height:50px;font-weight:700;margin:5px;border-width:0;border-radius:8px;cursor:pointer;box-shadow:0 0 5px #999}
+button:hover{transform:scale(0.95,0.95)}
+#content{display:none;margin-top:15%;padding:50px 20px 50px 20px;background-color:rgba(0,0,0,.6)}
+#control{display:none;opacity:0;margin-top:20px;text-align:center}
+.control{animation: notrans 1s 1 ease-in forwards}
+@keyframes notrans{0%{opacity:0}100%{opacity:1}}
+
+/* online widget */
+#uonline{display:none;animation: godown 8s 1 ease-in-out;text-align:center;position:fixed;bottom:-900px;right:0;width:100%;max-height:272px;overflow:hidden;margin:0;padding:10px;background-image:linear-gradient(rgba(0,0,0,0),#000,#000)}
+@keyframes godown{0%{bottom:-900px}5%{bottom:0}96%{bottom:0}100%{bottom:-900px}}
+.uonline{display:inline-block;border:10px solid #eee;border-radius:100%;text-align:center;padding:5px;margin:2px;width:60px;height:60px;background-size:100%;background-position:center;background-repeat:no-repeat}
+.tonline{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block;margin-top:45px;border-radius:3px;width:50px;padding:2px;color:#eee;background-color:rgba(0,0,0,.6)}
+
+</style>
+
+</head>
+
+<body onload="init()">
+
+<div id="content">
+
+<div style="font-family:titlefont;font-size:6vw;line-height:140%;text-align:center">
+<span style="color:#E91E63">Coffee</span> &amp; Tea <span style="color:#FF9800">Lovers</span></div>
+
+<div style="text-align:center;font-weight:500;margin-top:20px">
+Heavy coffee &amp; tea drinkers community.
+
+<div id="control">
+<button id="butt_ent" style="display:none;background-color:#E91E63;padding:0 80px 0 80px" onclick="self.location.href='index.php?nosplash'">ENTER CHAT</button>
+<button id="butt_log" style="display:none;background-color:#FF9800" onclick="self.location.href='account.php'">LOGIN</button>
+<button id="butt_reg" style="display:none;background-color:#000000" onclick="self.location.href='account.php?q=register'">REGISTER</button>
+</div>
+
+</div>
+</div>
+
+<div id="uonline"></div>
+<div id="initbg"></div>
+
+<script>
+
+is_loggedin='%ISLOGGEDIN%';
+
+palette=new Array('F5D3C8','BCBDC0','BF979D','734B5E','A491D3','C5DCA0','E5FFDE','BBCBCB','F0B67F','FE5F55','C7EFCF','368F8B','CDFFF9','E2DADB','A4B494','9BC4CB','C2CAE8','95B2B0','C6EBBE','D5DCF9','8EDCE6','90A583','F3FFC6','B6174B','815355','523249','90A955','ECF39E','4BC6B9','B57BA6','A79AB2','FEFEFE','1C6E8C','D0CCD0','B9BEA5','F6CA83','C6EBBE','C2E1C2','F4D06F')
+
+function online_avt_get(){
+widget_url='widget.php?q=online_avt';
+widget_oag=new XMLHttpRequest();
+widget_oag.open('get',widget_url);
+widget_oag.onreadystatechange=online_avt_rec; 
+widget_oag.send()}
+
+function online_avt_rec(){
+if(widget_oag.readyState==4 && widget_oag.status==200){
+obj=JSON.parse(widget_oag.responseText); txt='';
+for(element in obj){
+bc=palette[Math.floor(Math.random()*palette.length)]
+txt+='<div class="uonline" style="border-color:#'+bc+';background-image:url('+obj[element]+')">';
+txt+='<small class="tonline">&nbsp;'+element+'&nbsp;</small></div>';}
+document.getElementById('uonline').innerHTML=txt}}
+
+// ---
+
+online_avt_get();
+
+function init(){
+document.getElementById('initbg').className='initbg'
+setTimeout("document.getElementById('initbg').style.display='none'",500)
+setTimeout("document.getElementById('uonline').style.display='block'",1000);
+setTimeout("document.getElementById('content').style.display='block';document.getElementById('content').className='control'",1000);
+setTimeout("document.getElementById('control').style.display='block';document.getElementById('control').className='control'",8500);
+}
+
+// ---
+
+if(is_loggedin!=1){
+document.getElementById('butt_log').style.display='inline'
+document.getElementById('butt_reg').style.display='inline'
+} else{
+document.getElementById('butt_ent').style.display='inline'
+}
+
+</script>
+
+<!-- CHECK PATHS AND LOGGEDIN -->
+
+</body>
+</html>

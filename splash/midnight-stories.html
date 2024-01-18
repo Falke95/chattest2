@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+
+<title>Midnight Stories</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<meta name="description" content="::: description :::">
+<meta name="keywords" content="keyword1, keyword2, keyword3">
+
+<link rel="preload" as="font" href="splash/midnight-stories.woff2" crossorigin="anonymous">
+
+<style>
+
+@font-face{font-family:titlefont;src:url(splash/midnight-stories.woff2) format('woff2')}
+body,div{font-size:16px;font-family:titlefont}
+
+body{color:#fff;background-color:#000000;padding:0;margin:0;background-image:url(backgrounds/couple2.jpg);background-size:cover;background-attachment:fixed;background-position:center bottom;background-repeat:no-repeat}
+#initbg{position:fixed;top:0;left:0;right:0;bottom:0;filter:blur(22px);background-size:cover;background-attachment:fixed;background-position:center bottom;background-repeat:no-repeat;background-image:url(data:image/img+jpg;base64,/9j/4AAQSkZJRgABAQEBLAEsAAD/2wBDACgcHiMeGSgjISMtKygwPGRBPDc3PHtYXUlkkYCZlo+AjIqgtObDoKrarYqMyP/L2u71////m8H////6/+b9//j/2wBDASstLTw1PHZBQXb4pYyl+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj4+Pj/wgARCAA2AGADAREAAhEBAxEB/8QAGAABAQEBAQAAAAAAAAAAAAAAAQIAAwT/xAAVAQEBAAAAAAAAAAAAAAAAAAAAAf/aAAwDAQACEAMQAAAB8QxjFLRQGKJJOdjFAICKpQgcLMXAYpaMSmMqc7AYoiqi1QATGE5WdJedjCKymEy0WcLKi1hMYDAYpbISK6yygYDGA//EAB0QAAICAgMBAAAAAAAAAAAAAAERACAQMAIhMUH/2gAIAQEAAQUCq44qKqo46jDyoRc6iOoItX0ahOXsEN//xAAUEQEAAAAAAAAAAAAAAAAAAABg/9oACAEDAQE/ASn/xAAUEQEAAAAAAAAAAAAAAAAAAABg/9oACAECAQE/ASn/xAAUEAEAAAAAAAAAAAAAAAAAAABg/9oACAEBAAY/Ain/xAAdEAADAQEBAAMBAAAAAAAAAAAAAREQITEgMFFB/9oACAEBAAE/IdRRYQ/BJrGvg9RNUulOb6HxlCZxkECMrITEdq4l+nF+Z6UpRFMdKDhwm3+ZcQh8DDVX2BxI/n//2gAMAwEAAgADAAAAEI/9tssg+32skhX2km0rO59lskiq2n3ko83+/wDZ3f8A7f8A/8QAGBEAAgMAAAAAAAAAAAAAAAAAAVAQETD/2gAIAQMBAT8QSVJRnL//xAAWEQADAAAAAAAAAAAAAAAAAAABMGD/2gAIAQIBAT8Qigr/xAAdEAEBAQACAwEBAAAAAAAAAAABABEhMRBBUWFx/9oACAEBAAE/ELNjplnETCDKtWLM8mn5JaSh4fBBr9PETyXJ6iEF9jVjNyVe/BPo+5bHy04OLIt7gbfpSRmaj8sTc4sOEbT6n5sTuWMMD/HwS8oE44fy0/JRcrkDUOrTahAnHMWEXTIi9QiO9bH6ZPojgyJsrpHQ/bkubOyGzer1izh0W22wyj2+w5a8Srzxb4W23x//2Q==)}
+.initbg{animation: gohide .5s 1 ease-in forwards}
+@keyframes gohide{0%{opacity:100%}100%{opacity:0}}
+
+button{color:#fff;background-color:#D70049;height:50px;line-height:50px;font-weight:700;font-size:14px;width:100%;margin:5px;border-width:0;border-radius:8px;cursor:pointer;box-shadow:0 0 5px #999}
+button:hover{background-color:#FF0056}
+#content{margin-top:5%;padding:50px 20px 50px 20px;background-color:rgba(0,0,0,0);display:none}
+#control{opacity:0;margin-top:40px;text-align:center}
+.control{animation: notrans 1s 1 ease-in forwards}
+@keyframes notrans{0%{opacity:0}100%{opacity:1}}
+
+</style>
+
+</head>
+
+<body onload="init()">
+<div id="initbg"></div>
+
+<div id="content">
+
+<div style="color:#D70049;font-size:120px;font-weight:600;text-align:center">Midnight Stories</div>
+
+<div style="width:500px;max-width:90%;font-family:sans-serif;text-align:justify;margin:60px auto 0 auto;font-weight:500">
+Our website contains explicit materials and language that should not be viewed by people under the age of 18. If you enter this website, you agree that you are at least 18 years of age.  If you are under 18, please leave this site immediately.
+<div id="control">
+<button onclick="self.location.href='index.php?nosplash'">ENTER CHAT</button>
+</div>
+
+</div>
+</div>
+
+<script>
+
+function init(){
+document.getElementById('initbg').className='initbg'
+setTimeout("document.getElementById('initbg').style.display='none'",500)
+setTimeout("document.getElementById('content').style.display='block';document.getElementById('content').className='control'",300)
+setTimeout("document.getElementById('control').style.display='block';document.getElementById('control').className='control'",800)
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head><title>ACP: <?php print $lang['msgstylt'];?></title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="admin/<?php print $settings['acp_css'];?>">
+<script src="admin/admin.js"></script>
+</head>
+
+<body class="x_global x_overal">
+<form action="admin.php" method="post" autocomplete="off" onsubmit="return eform('tt1,tt2')">
+<div class="holder">
+
+<h2 onclick="self.location.href='admin.php?q=style'" class="pointer svg_styl">
+<span style="float:right;height:40px;width:40px" class="svg_upup"></span>
+<?php print $lang['msgstylt'];?></h2>
+<hr>
+
+<div><?php print $lang['msgstylb'];?></div>
+<br><hr>
+
+<textarea id="tt1" placeholder="HTML" name="msg_template" class="x_bcolor_bg" style="height:150px"><?php $x=htmlspecialchars($settings['msg_template']); print $x; ?></textarea>
+<textarea id="tt2" placeholder="CSS" name="msg_style" class="x_bcolor_bg" style="height:150px"><?php $x=htmlspecialchars($settings['msg_style']); print $x; ?></textarea>
+
+
+<div style="text-align:left">
+<input onclick="settns(0)" value="<?php print $lang['templ'];?> {one line}" class="round4 x_bcolor_bg" style="margin:1px" type="button" >
+<input onclick="settns(1)" value="<?php print $lang['templ'];?> {avatar+@}" class="round4 x_bcolor_bg" style="margin:1px" type="button" >
+</div><hr>
+
+<input type="submit" class="round4 x_bcolor_bg" style="width:100%;font-weight:bold;height:50px" value="<?php print $lang['submit'];?>">
+
+</div>
+</form>
+<script>
+metmpl=new Array()
+mstyle=new Array()
+
+metmpl[0] = '<div style="margin-bottom:5px;text-align:left"><span class="chat_area_time">{TIME}</span> <span class="chat_area_user g{GROUP}">{NAME}</span>: <span class="tt{COLOR}">{TEXT}</span></div>'
+mstyle[0] = ''
+
+metmpl[1] = '<div class="msg"><img class="avt x_circle" src="{AVATAR}" alt=""><div style="text-align:left"><span onclick="inp.value=\\\'«@\\\'+this.innerHTML+\\\'» \\\'+inp.value" class="pointer chat_area_user g{GROUP}">{NAME}</span> <span class="chat_area_time">{TIME}</span><br><span class="tt{COLOR}" style="word-break:break-word">{TEXT}</span></div></div>'
+mstyle[1] = '.msg{margin-bottom:20px;min-width:200px;display:flex;clear:both} .avt{float:left;width:50px;height:50px;margin-right:10px}'
+
+function settns(x){document.forms[0].msg_template.value=metmpl[x];document.forms[0].msg_style.value=mstyle[x]}
+
+</script>
+<?php include 'admin/menu.pxtm'; ?>
+
+</body></html>
