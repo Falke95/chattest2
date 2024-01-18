@@ -75,6 +75,22 @@ print '<option value="'.$gid.'"'.$sel.'>'.$gname.'</option>';
 </div>
 <br><hr>
 
+<div class="left"><?php print $lang['group']; ?></div>
+    <div class="right">
+        <select class="x_accent_bb s250" name="group">
+            <?php 
+            $res = neutral_query('SELECT id, name FROM '.$dbss['prfx'].'_groups ORDER BY id ASC');
+            while($row = neutral_fetch_array($res)) {
+                $gid = (int)$row['id'];
+                $gname = htmlspecialchars($row['name']);
+                $sel = ($user['ugroup'] == $gid) ? ' selected="selected"' : '';
+                print '<option value="'.$gid.'"'.$sel.'>'.$gname.'</option>';
+            }
+            ?>
+        </select>
+</div>
+
+
 <div class="left"><?php print $lang['userpass'];?></div>
 <div class="right">
 <input type="text" name="password" class="x_accent_bb s250" value="">

@@ -180,6 +180,22 @@ $res=neutral_query('SELECT * FROM '.$dbss['prfx']."_users WHERE email='$email'")
 if(neutral_num_rows($res)<1){ $ok='&ok='.$timestamp;
 neutral_query('UPDATE '.$dbss['prfx']."_users SET email='$email' WHERE id=$id");}}
 
+if(isset($_POST['group'])){
+    $selected_group_id = $_POST["group"];
+    $user_id = $id; // Die Benutzer-ID, die Sie bereits aus $_GET['id'] erhalten
+
+    // SQL-Update-Anweisung, um die Benutzergruppe zu aktualisieren
+    $update_result = neutral_query('UPDATE '.$dbss['prfx']."_users SET ugroup='$selected_group_id' WHERE id='$user_id'");
+    if(!$update_result) {
+        // Fehlerbehandlung
+        $error_message = "Fehler bei der Aktualisierung der Benutzergruppe: " . mysqli_error($dbConnection);
+        error_log($error_message, 3, "C:\\xampp\\htdocs\\chat\\error.txt"); // Pfad zur Log-Datei anpassen
+        echo $error_message;
+    }
+}
+
+
+
 if(isset($_POST['password']) && length($_POST['password'])>2){
 $newpass=hash('sha256',trim($_POST['password']).$user['salt']); $ok='&ok='.$timestamp;
 neutral_query('UPDATE '.$dbss['prfx']."_users SET password='$newpass' WHERE id=$id");} 

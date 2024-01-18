@@ -45,5 +45,6 @@ $lang_list[] = array('pt', 'Português',  'lang_portuguese.utf8');
 
 $lang_admin=array();
 $lang_admin[]='english_admin.utf8';
+$lang_admin[]='german_admin.utf8';
 
 ?>
