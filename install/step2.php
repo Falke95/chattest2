@@ -184,10 +184,7 @@ zorder integer NOT NULL,
 hidden smallint NOT NULL,
 groupids varchar(256) NOT NULL)'.$options;
 
-$install[]='INSERT INTO '.$dbss['prfx']."_rooms VALUES(1,'PanDEMONiuM','Everybody\'s Very Welcome!','3B7AB5',0,0,'')";
-$install[]='INSERT INTO '.$dbss['prfx']."_rooms VALUES(2,'Mediterranean Dish','What to Eat, and How to Cook It!','FFD93F',1002,0,'')";
-$install[]='INSERT INTO '.$dbss['prfx']."_rooms VALUES(3,'Vivian\'s Bedroom','Don\'t Come In, I\'m Naked!','D90048',1003,0,'')";
-$install[]='INSERT INTO '.$dbss['prfx']."_rooms VALUES(4,'Honky-Tonk Corner','WARNING! 85+ Only!','8BC34A',1004,0,'')";
+$install[]='INSERT INTO '.$dbss['prfx']."_rooms VALUES(1,'Chatraum','Willkommen im Chat','3B7AB5',0,0,'')";
 
 $install[]='CREATE TABLE '.$dbss['prfx'].'_fmedia(
 id integer NOT NULL auto_increment PRIMARY KEY,
@@ -355,6 +352,8 @@ py smallint NOT NULL,
 pz smallint NOT NULL)'.$options;
 
 $install[]='INSERT INTO '.$dbss['prfx']."_groups VALUES(NULL,'DEFAULT','',0,0,'F44336',1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,0,1,0)";
+$install[]='INSERT INTO '.$dbss['prfx']."_groups VALUES(1,'Moderator','',0,0,'F44336',1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,0,1,0)";
+$install[]='INSERT INTO '.$dbss['prfx']."_groups VALUES(2,'Administrator','',0,0,'F44336',1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,1,0,1,1,1,0,1,0)";
 
 $install[]='CREATE TABLE '.$dbss['prfx'].'_jbox(
 id integer NOT NULL auto_increment PRIMARY KEY,

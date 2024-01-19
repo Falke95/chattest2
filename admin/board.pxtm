@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 $backpoint2del=$timestamp-604800; // 7 days to keep failed login/recoverPassword attempts
 neutral_query('DELETE FROM '.$dbss['prfx']."_bflog WHERE timestamp<$backpoint2del");
@@ -28,6 +31,7 @@ neutral_query('DELETE FROM '.$dbss['prfx']."_iplog WHERE timestamp<$backpoint2de
 <span class="menu_dash svg_addt" onclick="self.location.href='admin.php?q=addt'" title="<?php print $lang['addt'];?>"></span>
 <span class="menu_dash svg_styl" onclick="self.location.href='admin.php?q=style'" title="<?php print $lang['style'];?>"></span>
 <span class="menu_dash svg_room" onclick="self.location.href='admin.php?q=rooms'" title="<?php print $lang['rooms'];?>"></span>
+<span class="menu_dash svg_vpro" onclick="self.location.href='admin.php?q=groups'" title="<?php print $lang['groups'];?>"></span>
 <span class="menu_dash svg_mssg" onclick="self.location.href='admin.php?q=messages'" title="<?php print $lang['messages'];?>"></span>
 <span class="menu_dash svg_usrs" onclick="self.location.href='admin.php?q=users'" title="<?php print $lang['users'];?>"></span>
 <span class="menu_dash svg_cron" onclick="self.location.href='admin.php?q=dbopt'" title="<?php print $lang['dbopt'];?>"></span>

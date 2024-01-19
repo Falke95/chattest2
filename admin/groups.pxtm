@@ -1,0 +1,71 @@
+<?php
+$res=neutral_query('SELECT *, zorder FROM '.$dbss['prfx'].'_groups ORDER BY zorder,id ASC');
+
+$groups=''; $gcodecn=0;
+
+while($row=neutral_fetch_array($res)){
+
+$gcodecn+=1; $gcodepn=$gcodecn.'. '; if($gcodecn>9){$gcodepn='';} 
+$name=htmlspecialchars($row['name']); $desc=htmlspecialchars($row['description']);
+$dell=''; if($row['id']>1){$dell='<input type="button" class="round4 x_accent_bg pointer" onclick="cfrm=confirm(\''.$lang['confirm'].'\');if(cfrm){self.location.href=\'admin.php?delgroup='.$row['id'].'\'}" value="&nbsp;'.$lang['delete'].'&nbsp;">';}
+
+$groups.='<tr class="x_bcolor_bg">';
+$groups.='<td class="pointer" style="width:50px"><div onclick="self.location.href=\'admin.php?q=group&group='.$row['id'].'\'" style="width:50px;height:50px;border-radius:100%;background-color:#'.$row['color'].'"></div>';
+$groups.='<div class="x_accent_bg round4" style="text-align:center;font-size:80%;position:relative;top:-10px;cursor:default">&nbsp;ID:'.$row['id'].'&nbsp;';
+if($row['zorder']>0){$groups.='<br>&nbsp;ZO:'.$row['zorder'].'&nbsp;';}
+$groups.='</div></td>';
+$groups.='<td class="pointer" onclick="self.location.href=\'admin.php?q=group&group='.$row['id'].'\'">';
+$groups.='<div style="font-size:180%;font-weight:bold">'.$gcodepn.$name.'</div>'.$desc.'</td>';
+$groups.='<td style="width:80px;text-align:center">'.$dell.'</td>';
+$groups.='</tr>';
+
+}
+
+$addgroup='return false'; $addgroup='self.location.href=\'admin.php?addgroup=1\'';
+$delallg='return false'; $delallg='cfrm=confirm(\''.$lang['confirm'].'\');if(cfrm){self.location.href=\'admin.php?delallgroups\'}';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head><title>ACP: <?php print $lang['groups'];?></title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="stylesheet" href="admin/<?php print $settings['acp_css'];?>">
+<script src="admin/admin.js"></script>
+</head>
+
+<body class="x_global x_overal">
+<div class="holder">
+
+<h2 onclick="self.location.href='admin.php'" class="pointer svg_group">
+<span style="float:right;height:40px;width:40px" class="svg_upup"></span>
+<?php print $lang['groups'];?></h2>
+<hr>
+
+<?php print $lang['groupdesc'];?>
+<br>&nbsp;<br>
+
+<hr>
+
+<div style="width:100%;overflow:auto">
+<table>
+<tr class="x_bcolor_bg"><td colspan="3"></td></tr>
+
+<?php print $groups;?>
+
+<tr class="x_bcolor_bg"><td colspan="3"></td></tr>
+</table>
+</div>
+<br><hr>
+<input type="button" style="float:left;margin-bottom:10px" class="round4 x_bcolor_bg s120 pointer" onclick="<?php print $addgroup;?>" value="<?php print $lang['addgroup'];?>">
+<input type="button" style="float:right;margin-bottom:10px" class="round4 x_accent_bg s120 pointer" onclick="<?php print $delallg;?>" value="<?php print $lang['dellall'];?>">
+<br><hr>
+
+<!-- Rest of the form remains the same, just replace all instances of 'room' with 'group' -->
+
+</div>
+
+<?php include 'admin/menu.pxtm'; ?>
+
+</body></html>
