@@ -1,5 +1,8 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once 'config.php';
 require_once 'incl/main.php';
 require_once 'version.php';
@@ -19,7 +22,7 @@ neutral_dbconnect(); $settings=get_settings();
 if(isset($_COOKIE[$xcookie_dn_mode[0]]) && $_COOKIE[$xcookie_dn_mode[0]] === '0'){$settings['style_delivery']=$mode0css;}
 if(isset($_COOKIE[$xcookie_dn_mode[0]]) && $_COOKIE[$xcookie_dn_mode[0]] === '1'){$settings['style_delivery']=$mode1css;}
 
-require_once 'lang/admin_english.utf8';
+require_once 'lang/admin_german.utf8';
 
 /* --- */
 
@@ -358,6 +361,58 @@ redirect('admin.php?q=rooms&ok='.$timestamp); }}
 if(isset($_GET['delallrooms'])){
 neutral_query('DELETE FROM '.$dbss['prfx'].'_rooms WHERE id>1');
 redirect('admin.php?q=rooms&ok='.$timestamp); }
+
+if(isset($_POST['addgroup'])){
+    $group_name = $_POST['group_name'];
+    $group_description = $_POST['group_description'];
+    $query = "INSERT INTO ".$dbss['prfx']."_groups (name, description) VALUES ('$group_name', '$group_description')";
+    neutral_query($query);
+    redirect('admin.php?q=groups&ok='.$timestamp);
+}
+
+// Read groups
+if(isset($_GET['groups'])){
+    $query = "SELECT * FROM ".$dbss['prfx']."_groups";
+    $result = neutral_query($query);
+    while($row = $result->fetch_assoc()){
+        echo $row['name'].": ".$row['description'];
+    }
+}
+
+// Update group
+if(isset($_POST['updategroup'])){
+    $group_id = $_POST['group_id'];
+    $group_name = $_POST['group_name'];
+    $group_description = $_POST['group_description'];
+    $query = "UPDATE ".$dbss['prfx']."_groups SET name = '$group_name', description = '$group_description' WHERE id = $group_id";
+    neutral_query($query);
+    redirect('admin.php?q=groups&ok='.$timestamp);
+}
+
+// Delete group
+if(isset($_POST['deletegroup'])){
+    $group_id = $_POST['group_id'];
+    $query = "DELETE FROM ".$dbss['prfx']."_groups WHERE id = $group_id";
+    neutral_query($query);
+    redirect('admin.php?q=groups&ok='.$timestamp);
+}
+
+if(isset($_GET['editgroup'])){
+    $group_id = $_GET['group_id'];
+    $query = "SELECT * FROM ".$dbss['prfx']."_groups WHERE id = $group_id";
+    $result = neutral_query($query);
+    $group = $result->fetch_assoc();
+
+    echo '<form method="post" action="admin.php?q=groups">';
+    echo '<input type="hidden" name="group_id" value="'.$group['id'].'">';
+    echo '<label for="group_name">Gruppen Name:</label>';
+    echo '<input type="text" id="group_name" name="group_name" value="'.$group['name'].'">';
+    echo '<label for="group_description">Group Beschreibung:</label>';
+    echo '<input type="text" id="group_description" name="group_description" value="'.$group['description'].'">';
+    echo '<input type="submit" name="updategroup" value="Update Group">';
+    echo '</form>';
+}
+
 
 /* --- */
 
