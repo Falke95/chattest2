@@ -1,71 +1,267 @@
 <?php
-$res=neutral_query('SELECT *, zorder FROM '.$dbss['prfx'].'_groups ORDER BY zorder,id ASC');
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-$groups=''; $gcodecn=0;
+$groupData = [
+    'name' => '',
+    'welcome' => '',
+    'link' => '',
+    'vlnk' => '',
+    'color' => '',
+    'pa' => 0,
+    'pb' => 0,
+    'pc' => 0,
+    'pd' => 0,
+    'pe' => 0,
+    'pf' => 0
+];
 
-while($row=neutral_fetch_array($res)){
+$action = 'add'; // Standardaktion ist das Hinzufügen einer Gruppe
 
-$gcodecn+=1; $gcodepn=$gcodecn.'. '; if($gcodecn>9){$gcodepn='';} 
-$name=htmlspecialchars($row['name']); $desc=htmlspecialchars($row['description']);
-$dell=''; if($row['id']>1){$dell='<input type="button" class="round4 x_accent_bg pointer" onclick="cfrm=confirm(\''.$lang['confirm'].'\');if(cfrm){self.location.href=\'admin.php?delgroup='.$row['id'].'\'}" value="&nbsp;'.$lang['delete'].'&nbsp;">';}
+if (isset($_GET['editgroup'])) {
+    $group_id = (int)$_GET['group_id'];
+    $action = 'edit'; // Aktion ist das Bearbeiten einer vorhandenen Gruppe
 
-$groups.='<tr class="x_bcolor_bg">';
-$groups.='<td class="pointer" style="width:50px"><div onclick="self.location.href=\'admin.php?q=group&group='.$row['id'].'\'" style="width:50px;height:50px;border-radius:100%;background-color:#'.$row['color'].'"></div>';
-$groups.='<div class="x_accent_bg round4" style="text-align:center;font-size:80%;position:relative;top:-10px;cursor:default">&nbsp;ID:'.$row['id'].'&nbsp;';
-if($row['zorder']>0){$groups.='<br>&nbsp;ZO:'.$row['zorder'].'&nbsp;';}
-$groups.='</div></td>';
-$groups.='<td class="pointer" onclick="self.location.href=\'admin.php?q=group&group='.$row['id'].'\'">';
-$groups.='<div style="font-size:180%;font-weight:bold">'.$gcodepn.$name.'</div>'.$desc.'</td>';
-$groups.='<td style="width:80px;text-align:center">'.$dell.'</td>';
-$groups.='</tr>';
+    $query = "SELECT * FROM " . $dbss['prfx'] . "_groups WHERE id = $group_id";
+    $result = neutral_query($query);
+    $group = $result->fetch_assoc();
 
+    if ($group) {
+        // Wenn die Gruppe gefunden wurde, füllen Sie die $groupData-Variablen mit den vorhandenen Daten
+        $groupData['name'] = $group['name'];
+        $groupData['welcome'] = $group['welcome'];
+        $groupData['link'] = $group['link'];
+        $groupData['vlnk'] = $group['vlnk'];
+        $groupData['color'] = $group['color'];
+
+        // Aktivieren Sie die entsprechenden Berechtigungen basierend auf den vorhandenen Daten
+        foreach ($groupData as $key => $value) {
+            if (isset($group[$key]) && $group[$key]) {
+                $groupData[$key] = 1;
+            }
+        }
+    }
 }
 
-$addgroup='return false'; $addgroup='self.location.href=\'admin.php?addgroup=1\'';
-$delallg='return false'; $delallg='cfrm=confirm(\''.$lang['confirm'].'\');if(cfrm){self.location.href=\'admin.php?delallgroups\'}';
+// Read groups
+$query = "SELECT * FROM " . $dbss['prfx'] . "_groups";
+$result = neutral_query($query);
+$groups = [];
+
+while ($row = $result->fetch_assoc()) {
+    $groups[] = $row;
+}
+
+// Aktualisieren der Gruppe
+if (isset($_POST['updategroup'])) {
+    $group_id = (int)$_POST['group_id'];
+
+    // Aktualisieren Sie die Gruppeninformationen in der Datenbank
+    $query = "UPDATE " . $dbss['prfx'] . "_groups SET
+        name = '" . $_POST['group_name'] . "',
+        welcome = '" . $_POST['welcome'] . "',
+        link = " . (int)$_POST['link'] . ",
+        vlnk = " . (int)$_POST['vlnk'] . ",
+        color = '" . $_POST['color'] . "',
+        pa = " . (isset($_POST['pa']) ? 1 : 0) . ",
+        pb = " . (isset($_POST['pb']) ? 1 : 0) . ",
+        pc = " . (isset($_POST['pc']) ? 1 : 0) . ",
+        pd = " . (isset($_POST['pd']) ? 1 : 0) . ",
+        pe = " . (isset($_POST['pe']) ? 1 : 0) . ",
+        pf = " . (isset($_POST['pf']) ? 1 : 0) . "
+        WHERE id = $group_id";
+
+    neutral_query($query);
+    redirect('admin.php?q=groups&ok=' . $timestamp);
+}
+
+// Löschen der Gruppe
+if (isset($_POST['deletegroup'])) {
+    $group_id = (int)$_POST['group_id'];
+
+    // Löschen Sie die Gruppe aus der Datenbank
+    $query = "DELETE FROM " . $dbss['prfx'] . "_groups WHERE id = $group_id";
+    neutral_query($query);
+    redirect('admin.php?q=groups&ok=' . $timestamp);
+}
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 
-<head><title>ACP: <?php print $lang['groups'];?></title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<link rel="stylesheet" href="admin/<?php print $settings['acp_css'];?>">
-<script src="admin/admin.js"></script>
+<head>
+    <title>ACP: Groups</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="admin/<?php print $settings['acp_css']; ?>">
+    <script src="admin/admin.js"></script>
+    <style>
+        /* CSS-Styling für die Container */
+        .holder {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* CSS-Styling für das Formular */
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f2f2f2; /* Grauer Hintergrund */
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        /* CSS-Styling für die Formularfelder */
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea {
+            margin-bottom: 10px;
+            padding: 5px;
+            width: 100%;
+            max-width: 300px; /* Ändere die maximale Breite nach Bedarf */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* CSS-Styling für die Berechtigungs-Checkboxen */
+        .permissions {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .permissions label {
+            margin-bottom: 5px;
+        }
+
+        /* CSS-Styling für die Buttons */
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .buttons input[type="submit"] {
+            flex: 1;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 
 <body class="x_global x_overal">
-<div class="holder">
+    <div class="holder">
+        <h2>Gruppen</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+            <?php foreach ($groups as $group) : ?>
+                <tr>
+                    <td><?php echo $group['id']; ?></td>
+                    <td><?php echo $group['name']; ?></td>
+                    <td>
+                        <a href="admin.php?q=groups&editgroup=1&group_id=<?php echo $group['id']; ?>">Bearbeiten</a> |
+                        <a href="admin.php?q=groups&deletegroup=1&group_id=<?php echo $group['id']; ?>">Löschen</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+        <hr>
+        <!-- JavaScript, um die Kategorie "Gruppe Erstellen" aufzuklappen -->
+        <script>
+            window.addEventListener('DOMContentLoaded', function () {
+                var createGroupCategory = document.getElementById('createGroupCategory');
+                var createGroupForm = document.getElementById('createGroupForm');
+                var editGroupCategory = document.getElementById('editGroupCategory');
+                var editGroupForm = document.getElementById('editGroupForm');
 
-<h2 onclick="self.location.href='admin.php'" class="pointer svg_group">
-<span style="float:right;height:40px;width:40px" class="svg_upup"></span>
-<?php print $lang['groups'];?></h2>
-<hr>
+                if (createGroupCategory && createGroupForm) {
+                    createGroupCategory.addEventListener('click', function () {
+                        if (createGroupForm.style.display === 'none' || createGroupForm.style.display === '') {
+                            createGroupForm.style.display = 'block'; // Aufklappen
+                            editGroupForm.style.display = 'none'; // Zuklappen
+                        } else {
+                            createGroupForm.style.display = 'none'; // Zuklappen
+                        }
+                    });
+                }
 
-<?php print $lang['groupdesc'];?>
-<br>&nbsp;<br>
+                if (editGroupCategory && editGroupForm) {
+                    editGroupCategory.addEventListener('click', function () {
+                        if (editGroupForm.style.display === 'none' || editGroupForm.style.display === '') {
+                            editGroupForm.style.display = 'block'; // Aufklappen
+                            createGroupForm.style.display = 'none'; // Zuklappen
+                        } else {
+                            editGroupForm.style.display = 'none'; // Zuklappen
+                        }
+                    });
+                }
+            });
+        </script>
 
-<hr>
+        <h2 id="createGroupCategory" class="pointer">Gruppe erstellen</h2>
+        <form id="createGroupForm" style="display: none;" method="post" action="admin.php?q=groups">
+            <input type="hidden" name="group_id" value="<?php echo ($action == 'edit') ? $group_id : ''; ?>">
+            <div>
+                <label for="group_name">Gruppen Name:</label>
+                <input type="text" id="group_name" name="group_name" value="<?php echo $groupData['name']; ?>">
+            </div>
+            <br><hr>
 
-<div style="width:100%;overflow:auto">
-<table>
-<tr class="x_bcolor_bg"><td colspan="3"></td></tr>
+            <div>
+                <label for="welcome">Willkommen:</label>
+                <textarea id="welcome" name="welcome"><?php echo $groupData['welcome']; ?></textarea>
+            </div>
+            <br><hr>
 
-<?php print $groups;?>
+            <div>
+                <label for="link">Link:</label>
+                <input type="number" id="link" name="link" value="<?php echo $groupData['link']; ?>">
+            </div>
+            <br><hr>
 
-<tr class="x_bcolor_bg"><td colspan="3"></td></tr>
-</table>
-</div>
-<br><hr>
-<input type="button" style="float:left;margin-bottom:10px" class="round4 x_bcolor_bg s120 pointer" onclick="<?php print $addgroup;?>" value="<?php print $lang['addgroup'];?>">
-<input type="button" style="float:right;margin-bottom:10px" class="round4 x_accent_bg s120 pointer" onclick="<?php print $delallg;?>" value="<?php print $lang['dellall'];?>">
-<br><hr>
+            <div>
+                <label for="vlnk">Vlnk:</label>
+                <input type="number" id="vlnk" name="vlnk" value="<?php echo $groupData['vlnk']; ?>">
+            </div>
+            <br><hr>
 
-<!-- Rest of the form remains the same, just replace all instances of 'room' with 'group' -->
+            <div>
+                <label for="color">Farbe:</label>
+                <input type="text" id="color" name="color" value="<?php echo $groupData['color']; ?>">
+            </div>
+            <br><hr>
 
-</div>
+            <div>
+                <label>Berechtigungen:</label>
+                <?php
+                $relevantPermissions = ['pa', 'pb', 'pc', 'pd', 'pe', 'pf']; // Fügen Sie alle erforderlichen Berechtigungen hinzu
 
-<?php include 'admin/menu.pxtm'; ?>
+                foreach ($relevantPermissions as $permKey) {
+                    echo '<label for="' . $permKey . '">' . $permKey . ':</label>';
+                    echo '<input type="checkbox" id="' . $permKey . '" name="' . $permKey . '" value="1" ' . ($groupData[$permKey] ? 'checked' : '') . '>';
+                }
+                ?>
+            </div>
+            <br><hr>
 
-</body></html>
+            <input type="submit" name="<?php echo ($action == 'add') ? 'addgroup' : 'updategroup'; ?>" class="round4 x_bcolor_bg" style="width:100%;font-weight:bold;height:50px" value="<?php echo ($action == 'add') ? 'Gruppe erstellen' : 'Gruppe aktualisieren'; ?>">
+
+            <?php if ($action == 'edit') : ?>
+                <input type="submit" name="deletegroup" class="round4 x_accent_bg" style="width:100%;font-weight:bold;height:50px" value="Gruppe löschen">
+            <?php endif; ?>
+        </form>
+        <!-- Ende des "Edit Group"-Formulars -->
+    </div>
+    <?php include 'admin/menu.pxtm'; ?>
+</body>
+
+</html>

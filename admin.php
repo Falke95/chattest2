@@ -1,7 +1,7 @@
 <?php
 
-error_reporting(E_ALL);
 ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
 require_once 'config.php';
 require_once 'incl/main.php';
@@ -364,91 +364,28 @@ redirect('admin.php?q=rooms&ok='.$timestamp); }
 
 
 if(isset($_POST['addgroup'])){
-    $group_id = $_POST['group_id'];
-    $group_name = $_POST['group_name'];
-    $group_welcome = $_POST['welcome'];
-    $group_link = $_POST['link'];
-    $group_vlnk = $_POST['vlnk'];
-    $group_color = $_POST['color'];
-    $group_pa = isset($_POST['pa']) ? 1 : 0;
-    $group_pa = isset($_POST['pa']) ? 1 : 0;
-    $group_pb = isset($_POST['pb']) ? 1 : 0;
-    $group_pc = isset($_POST['pc']) ? 1 : 0;
-    $group_pd = isset($_POST['pd']) ? 1 : 0;
-    $group_pe = isset($_POST['pe']) ? 1 : 0;
-    $group_pf = isset($_POST['pf']) ? 1 : 0;
-    $group_pg = isset($_POST['pg']) ? 1 : 0;
-    $group_ph = isset($_POST['ph']) ? 1 : 0;
-    $group_pi = isset($_POST['pi']) ? 1 : 0;
-    $group_pj = isset($_POST['pj']) ? 1 : 0;
-    $group_pk = isset($_POST['pk']) ? 1 : 0;
-    $group_pl = isset($_POST['pl']) ? 1 : 0;
-    $group_pm = isset($_POST['pm']) ? 1 : 0;
-    $group_pn = isset($_POST['pn']) ? 1 : 0;
-    $group_po = isset($_POST['po']) ? 1 : 0;
-    $group_pp = isset($_POST['pp']) ? 1 : 0;
-    $group_pq = isset($_POST['pq']) ? 1 : 0;
-    $group_pr = isset($_POST['pr']) ? 1 : 0;
-    $group_ps = isset($_POST['ps']) ? 1 : 0;
-    $group_pt = isset($_POST['pt']) ? 1 : 0;
-    $group_pu = isset($_POST['pu']) ? 1 : 0;
-    $group_pv = isset($_POST['pv']) ? 1 : 0;
-    $group_pw = isset($_POST['pw']) ? 1 : 0;
-    $group_px = isset($_POST['px']) ? 1 : 0;
-    $group_py = isset($_POST['py']) ? 1 : 0;
-    $group_pz = isset($_POST['pz']) ? 1 : 0;
-    $query = "INSERT INTO ".$dbss['prfx']."_groups (id, name, welcome, link, vlnk, color, pa, pa
-    pb
-    pc
-    pd
-    pe
-    pf
-    pg
-    ph
-    pi
-    pj
-    pk
-    pl
-    pm
-    pn
-    po
-    pp
-    pq
-    pr
-    ps
-    pt
-    pu
-    pv
-    pw
-    px
-    py
-    pz) VALUES 
-    ('$group_id', '$group_name', '$group_welcome', '$group_link', '$group_vlnk', '$group_color', $group_pa,
-    $group_pb,
-    $group_pc,
-    $group_pd,
-    $group_pe,
-    $group_pf,
-    $group_pg,
-    $group_ph,
-    $group_pi,
-    $group_pj,
-    $group_pk,
-    $group_pl,
-    $group_pm,
-    $group_pn,
-    $group_po,
-    $group_pp,
-    $group_pq,
-    $group_pr,
-    $group_ps,
-    $group_pt,
-    $group_pu,
-    $group_pv,
-    $group_pw,
-    $group_px,
-    $group_py,
-    $group_pz,)";
+    // Grundlegende Gruppeninformationen
+    $groupData = [
+        'id' => $_POST['group_id'], // Beachten Sie, dass 'group_id' in 'id' geändert wurde, um der Datenbankspalte zu entsprechen
+        'name' => $_POST['group_name'],
+        'welcome' => $_POST['welcome'],
+        'link' => $_POST['link'],
+        'vlnk' => $_POST['vlnk'],
+        'color' => $_POST['color']
+    ];
+
+    // Liste der relevanten Berechtigungen
+    $relevantPermissions = ['pa', 'pb', 'pc', 'pd', 'pe', 'pf']; // Fügen Sie hier alle Berechtigungen hinzu, die Sie benötigen
+
+    foreach ($relevantPermissions as $permKey) {
+        $groupData[$permKey] = isset($_POST[$permKey]) ? 1 : 0;
+    }
+
+    // Erstellen der SQL-Anweisung
+    $columns = implode(', ', array_keys($groupData));
+    $values = implode(', ', array_map(function($value) { return is_numeric($value) ? $value : "'$value'"; }, array_values($groupData)));
+    $query = "INSERT INTO ".$dbss['prfx']."_groups ($columns) VALUES ($values)";
+
     neutral_query($query);
     redirect('admin.php?q=groups&ok='.$timestamp);
 }
@@ -465,68 +402,35 @@ if(isset($_GET['groups'])){
 
 // Update group
 if(isset($_POST['updategroup'])){
-    $group_id = $_POST['group_id'];
-    $group_name = $_POST['group_name'];
-    $group_welcome = $_POST['welcome'];
-    $group_link = $_POST['link'];
-    $group_vlnk = $_POST['vlnk'];
-    $group_color = $_POST['color'];
-    $group_pa = isset($_POST['pa']) ? 1 : 0;
-    $group_pb = isset($_POST['pb']) ? 1 : 0;
-    $group_pc = isset($_POST['pc']) ? 1 : 0;
-    $group_pd = isset($_POST['pd']) ? 1 : 0;
-    $group_pe = isset($_POST['pe']) ? 1 : 0;
-    $group_pf = isset($_POST['pf']) ? 1 : 0;
-    $group_pg = isset($_POST['pg']) ? 1 : 0;
-    $group_ph = isset($_POST['ph']) ? 1 : 0;
-    $group_pi = isset($_POST['pi']) ? 1 : 0;
-    $group_pj = isset($_POST['pj']) ? 1 : 0;
-    $group_pk = isset($_POST['pk']) ? 1 : 0;
-    $group_pl = isset($_POST['pl']) ? 1 : 0;
-    $group_pm = isset($_POST['pm']) ? 1 : 0;
-    $group_pn = isset($_POST['pn']) ? 1 : 0;
-    $group_po = isset($_POST['po']) ? 1 : 0;
-    $group_pp = isset($_POST['pp']) ? 1 : 0;
-    $group_pq = isset($_POST['pq']) ? 1 : 0;
-    $group_pr = isset($_POST['pr']) ? 1 : 0;
-    $group_ps = isset($_POST['ps']) ? 1 : 0;
-    $group_pt = isset($_POST['pt']) ? 1 : 0;
-    $group_pu = isset($_POST['pu']) ? 1 : 0;
-    $group_pv = isset($_POST['pv']) ? 1 : 0;
-    $group_pw = isset($_POST['pw']) ? 1 : 0;
-    $group_px = isset($_POST['px']) ? 1 : 0;
-    $group_py = isset($_POST['py']) ? 1 : 0;
-    $group_pz = isset($_POST['pz']) ? 1 : 0;
-    $query = "UPDATE ".$dbss['prfx']."_groups SET name = '$group_name', welcome = '$group_welcome', link = $group_link, vlnk = $group_vlnk, color = '$group_color',  pa = $group_pa,
-    pb = $group_pb,
-    pc = $group_pc,
-    pd = $group_pd,
-    pe = $group_pe,
-    pf = $group_pf,
-    pg = $group_pg,
-    ph = $group_ph,
-    pi = $group_pi,
-    pj = $group_pj,
-    pk = $group_pk,
-    pl = $group_pl,
-    pm = $group_pm,
-    pn = $group_pn,
-    po = $group_po,
-    pp = $group_pp,
-    pq = $group_pq,
-    pr = $group_pr,
-    ps = $group_ps,
-    pt = $group_pt,
-    pu = $group_pu,
-    pv = $group_pv,
-    pw = $group_pw,
-    px = $group_px,
-    py = $group_py,
-    pz = $group_pz,
-     WHERE id = $group_id";
+    // Grundlegende Gruppeninformationen
+    $groupData = [
+        'name' => $_POST['group_name'],
+        'welcome' => $_POST['welcome'],
+        'link' => $_POST['link'],
+        'vlnk' => $_POST['vlnk'],
+        'color' => $_POST['color']
+    ];
+
+    // Liste der relevanten Berechtigungen
+    $relevantPermissions = ['pa', 'pb', 'pc', 'pd', 'pe', 'pf']; // Fügen Sie hier alle Berechtigungen hinzu, die Sie benötigen
+
+    foreach ($relevantPermissions as $permKey) {
+        $groupData[$permKey] = isset($_POST[$permKey]) ? 1 : 0;
+    }
+
+    // Erstellen der SQL-Anweisung für das Update
+    $updateParts = [];
+    foreach($groupData as $key => $value) {
+        $updateParts[] = "$key = " . (is_numeric($value) ? $value : "'$value'");
+    }
+    $updateString = implode(', ', $updateParts);
+    $group_id = $_POST['group_id']; // Sicherstellen, dass die group_id vorhanden ist
+    $query = "UPDATE ".$dbss['prfx']."_groups SET $updateString WHERE id = '$group_id'";
+
     neutral_query($query);
     redirect('admin.php?q=groups&ok='.$timestamp);
 }
+
 
 // Delete group
 if(isset($_POST['deletegroup'])){
@@ -544,20 +448,24 @@ if(isset($_GET['editgroup'])){
 
     echo '<form method="post" action="admin.php?q=groups">';
     echo '<input type="hidden" name="group_id" value="'.$group['id'].'">';
-    echo '<label for="name">Name:</label>';
-    echo '<input type="text" id="name" name="name" value="'.$group['name'].'">';
-    echo '<label for="welcome">Welcome:</label>';
+    echo '<label for="name">Gruppenname:</label>';
+    echo '<input type="text" id="name" name="name" value="'.$group['name'].'">';    
+    echo '<label for="welcome">Willkommens Nachricht:</label>';
     echo '<textarea id="welcome" name="welcome">'.$group['welcome'].'</textarea>';
     echo '<label for="link">Link:</label>';
     echo '<input type="number" id="link" name="link" value="'.$group['link'].'">';
     echo '<label for="vlnk">Vlnk:</label>';
     echo '<input type="number" id="vlnk" name="vlnk" value="'.$group['vlnk'].'">';
-    echo '<label for="color">Color:</label>';
+    echo '<label for="color">Gruppen Farbe:</label>';
     echo '<input type="text" id="color" name="color" value="'.$group['color'].'">';
-    echo '<label for="pa">PA:</label>';
-    echo '<input type="checkbox" id="pa" name="pa" value="1" '.($group['pa']?'checked':'').'>';
-    echo '<label for="pz">PZ:</label>';
-    echo '<input type="checkbox" id="pz" name="pz" value="1" '.($group['pz']?'checked':'').'>';
+    
+    $relevantPermissions = ['pa', 'pb', 'pc', 'pd', 'pe', 'pf']; // Liste der relevanten Berechtigungen
+    
+    foreach ($relevantPermissions as $permission) {
+        echo '<label for="' . $permission . '">GruppenRechte ' . strtoupper($permission) . ':</label>';
+        echo '<input type="checkbox" id="' . $permission . '" name="' . $permission . '" value="1" ' . ($group[$permission] ? 'checked' : '') . '>';
+    }
+    
     echo '<input type="submit" name="updategroup" value="Update Group">';
     echo '</form>';
 }
