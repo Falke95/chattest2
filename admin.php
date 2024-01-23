@@ -399,16 +399,14 @@ if(isset($_GET['groups'])){
         echo $row['name'];
     }
 }
-
-// Update group
 if(isset($_POST['updategroup'])){
     // Grundlegende Gruppeninformationen
     $groupData = [
-        'name' => $_POST['group_name'],
-        'welcome' => $_POST['welcome'],
-        'link' => $_POST['link'],
-        'vlnk' => $_POST['vlnk'],
-        'color' => $_POST['color']
+        'name' => mysqli_real_escape_string($mysqli, $_POST['group_name']),
+        'welcome' => mysqli_real_escape_string($mysqli, $_POST['welcome']),
+        'link' => intval($_POST['link']),
+        'vlnk' => intval($_POST['vlnk']),
+        'color' => mysqli_real_escape_string($mysqli, $_POST['color'])
     ];
 
     // Liste der relevanten Berechtigungen
@@ -421,14 +419,23 @@ if(isset($_POST['updategroup'])){
     // Erstellen der SQL-Anweisung für das Update
     $updateParts = [];
     foreach($groupData as $key => $value) {
-        $updateParts[] = "$key = " . (is_numeric($value) ? $value : "'$value'");
+        if (is_numeric($value)) {
+            $updateParts[] = "$key = $value";
+        } else {
+            $updateParts[] = "$key = '$value'";
+        }
     }
     $updateString = implode(', ', $updateParts);
-    $group_id = $_POST['group_id']; // Sicherstellen, dass die group_id vorhanden ist
+    $group_id = intval($_POST['group_id']); // Sicherstellen, dass die group_id vorhanden und eine Zahl ist
     $query = "UPDATE ".$dbss['prfx']."_groups SET $updateString WHERE id = '$group_id'";
 
-    neutral_query($query);
-    redirect('admin.php?q=groups&ok='.$timestamp);
+    if($mysqli->query($query) === TRUE){
+        // Weiterleitung bei Erfolg
+        redirect('admin.php?q=groups&ok='.$timestamp);
+    } else {
+        // Fehlermeldung
+        echo "Fehler beim Aktualisieren der Gruppe: " . $mysqli->error;
+    }
 }
 
 
