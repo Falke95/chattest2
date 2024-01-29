@@ -1,27 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <title>ACP: Smiley Upload</title>
+    <title>ACP: emotion</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="admin/<?php print $settings['acp_css']; ?>">
     <script src="admin/admin.js"></script>
+    <style>
+        /* Füge deine benutzerdefinierten CSS-Stile hier ein, einschließlich Smiley-Stilen */
+    </style>
 </head>
-
 <body class="x_global x_overal">
-    <div class="holder">
-        <!-- Smiley Upload Formular -->
-        <h2>Smiley Upload</h2>
-        <form method="POST" enctype="multipart/form-data">
-            <input type="text" name="emotion" placeholder="Enter emotion">
-            <input type="file" name="emoticon" accept="image/*">
-            <button type="submit">Upload Smiley</button>
-        </form>
-    </div>
+    <form action="admin.php?q=emotion" method="post" enctype="multipart/form-data" autocomplete="off">
+        <div class="holder">
+            <h2 onclick="self.location.href='admin.php?q=emotion'" class="pointer svg_styl">
+                <span style="float:right;height:40px;width:40px" class="svg_upup"></span>
+                emotion
+            </h2>
+            <hr>
+            
+            <!-- Emotion upload form -->
+            <div>
+                <input type="file" name="emoticon" accept=".svg,.png,.jpg,.jpeg" class="x_bcolor_bg" style="margin:1px">
+                <input type="submit" name="emotion" class="round4 x_bcolor_bg" style="margin:1px" value="Upload Emotion">
+            </div>
+            
+            <!-- Add Smiley Form -->
+            <div>
+                <label for="add_smiley">Add Smiley:</label>
+                <input type="text" id="add_smiley" name="add_smiley" class="x_bcolor_bg" style="margin:1px">
+                <input type="submit" name="submit_add_smiley" class="round4 x_bcolor_bg" style="margin:1px" value="Add">
+            </div>
+
+            <!-- Delete Smiley Form -->
+            <div>
+                <label for="delete_smiley">Delete Smiley:</label>
+                <select id="delete_smiley" name="delete_smiley">
+                    <?php foreach ($smileys as $smiley): ?>
+                        <option value="<?php print $smiley['id']; ?>"><?php print $smiley['name']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <input type="submit" name="submit_delete_smiley" class="round4 x_bcolor_bg" style="margin:1px" value="Delete">
+            </div>
+
+            <br><hr>
+
+            <input type="submit" class="round4 x_bcolor_bg" style="width:100%;font-weight:bold;height:50px" value="<?php print $lang['submit']; ?>">
+
+        </div>
+    </form>
 
     <?php include 'admin/menu.pxtm'; ?>
 
+    <!-- Your JavaScript code for handling smileys can go here -->
+    <script>
+        // JavaScript code for handling smileys
+        // For example, you can use JavaScript to validate smiley input or provide client-side interactions.
+    </script>
 </body>
-
 </html>

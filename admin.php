@@ -168,36 +168,59 @@ $id=(int)$_GET['ban']; $period=(int)$_GET['period'];
 neutral_query('UPDATE '.$dbss['prfx']."_ban SET timestamp=timestamp+$period WHERE id=$id");
 redirect('admin.php?q=logs&ok='.$timestamp); }
 
+
 if(isset($_POST['emotion'])){
-    // This code will be executed when the emoticon form is submitted
-    $uploadedFileName = $_FILES["emoticon"]["name"];
+    // Holen des Dateinamens des hochgeladenen Emoticons
+    $uploadedFileName = stripcslashes($_FILES["emoticon"]["name"]);
+
+    // Erstellen eines Smiley-Codes basierend auf dem Dateinamen
     $smileyCode = ':' . pathinfo($uploadedFileName, PATHINFO_FILENAME) . ':';
+    
+    // Speichern des Dateinamens für das neue Smiley
     $newSmileyFileName = $uploadedFileName;
 
-    // Update emoticons.css in the main directory
-    $cssContent = file_get_contents('emoticons.css'); // Path to the CSS file in the main directory
+    // Laden des Inhalts der existierenden 'emoticons.css'-Datei
+    $cssContent = file_get_contents('emoticons.css');
+
+    // Erstellen eines neuen CSS-Regel-Sets für das Smiley
     $newCssRule = ".svg_emo_" . str_replace(":", "", $smileyCode) . " {
         background-image: url('$newSmileyFileName');
         background-repeat: no-repeat;
         width: 24px;
         height: 24px;
     }";
+    
+    // Hinzufügen der neuen CSS-Regel zum bestehenden CSS-Inhalt
     $cssContent .= "\n$newCssRule";
+    
+    // Aktualisieren der 'emoticons.css'-Datei mit dem neuen CSS-Inhalt
     file_put_contents('emoticons.css', $cssContent);
 
-    // Update emocodes.php in the main directory
-    $emoticons = array(); // Empty emoticons array to recreate it
-    $emoticons[] = "';";
+    // Erstellen eines leeren Arrays für Emoticons
+    $emoticons = array();
 
-    $emoticonsContent = file_get_contents('emocodes.php'); // Path to the emocodes.php file in the main directory
-    $emoticonsContent = str_replace('<?php', '', $emoticonsContent); // Remove '<?php' at the beginning
-    $emoticonsContent = str_replace(';', '', $emoticonsContent); // Remove trailing ';'
-    eval($emoticonsContent); // Executes the PHP code in the emocodes.php file
+    // Laden des Inhalts der 'emocodes.php'-Datei
+    $emoticonsContent = file_get_contents('emocodes.php');
 
+    // Entfernen von PHP-Tags am Anfang und Semikolons am Ende
+    $emoticonsContent = str_replace('<?php', '', $emoticonsContent);
+    $emoticonsContent = str_replace(';', '', $emoticonsContent);
+
+    // Ausführen des PHP-Codes in der 'emocodes.php'-Datei
+    eval($emoticonsContent);
+
+    // Hinzufügen des neuen Smiley-Codes zum Array
     $emoticons[] = "$smileyCode svg_emo_" . str_replace(":", "", $smileyCode) . " 1";
+    
+    // Aktualisieren der 'emocodes.php'-Datei mit dem aktualisierten Emoticons-Array
     file_put_contents('emocodes.php', '<?php ' . var_export($emoticons, true) . ';');
+    
+    // Weiterleitung zur 'emotion'-Seite mit einem Erfolgsparameter
     redirect('admin.php?q=emotion&ok='.$timestamp);
 }
+
+
+
 /* --- */
 
 if(isset($_POST['edituser']) && isset($_POST['email'])){
@@ -726,6 +749,7 @@ case 'general'  : $page='general.pxtm';break;
 case 'badwords' : $page='badwords.pxtm';break;
 case 'ctab'     : $page='ctab.pxtm';break;
 case 'customjs' : $page='customjs.pxtm';break;
+case 'emotion' : $page='emotion.pxtm';break;
 case 'customcss': $page='customcss.pxtm';break;
 case 'splash'   : $page='splash.pxtm';break;
 case 'style'    : $page='style.pxtm';break;
