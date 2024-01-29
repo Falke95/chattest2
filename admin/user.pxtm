@@ -43,38 +43,6 @@ $regdate=gmdate('Y-m-d H:i:s',$user['timestamp']+$settings['acp_offset']*60);
 </div>
 <br><hr>
 
-<div class="left"><?php print $lang['group'];?></div>
-<div class="right">
-<select class="x_accent_bb s250" name="group">
-<?php 
-
-$res=neutral_query('SELECT id,name FROM '.$dbss['prfx'].'_groups ORDER BY id ASC');
-
-while($row=neutral_fetch_array($res)){
-$gid=(int)$row['id'];
-$gname=htmlspecialchars($row['name']);
-if($user['ugroup']==$gid){$sel=' selected="selected"';}else{$sel='';}
-print '<option value="'.$gid.'"'.$sel.'>'.$gname.'</option>';
-}
-
-?>
-
-</select>
-</div>
-<br><hr>
-
-<div class="left"><?php print $lang['uregdate'];?></div>
-<div class="right">
-<input type="text" class="x_accent_bb s250" value="<?php print $regdate;?>" readonly="readonly">
-</div>
-<br><hr>
-
-<div class="left"><?php print $lang['usermail'];?></div>
-<div class="right">
-<input type="text" name="email" class="x_accent_bb s250" value="<?php $x=htmlspecialchars($user['email']); print $x;?>">
-</div>
-<br><hr>
-
 <div class="left"><?php print $lang['group']; ?></div>
     <div class="right">
         <select class="x_accent_bb s250" name="group">
@@ -89,7 +57,19 @@ print '<option value="'.$gid.'"'.$sel.'>'.$gname.'</option>';
             ?>
         </select>
 </div>
+<br><hr>
 
+<div class="left"><?php print $lang['uregdate'];?></div>
+<div class="right">
+<input type="text" class="x_accent_bb s250" value="<?php print $regdate;?>" readonly="readonly">
+</div>
+<br><hr>
+
+<div class="left"><?php print $lang['usermail'];?></div>
+<div class="right">
+<input type="text" name="email" class="x_accent_bb s250" value="<?php $x=htmlspecialchars($user['email']); print $x;?>">
+</div>
+<br><hr>
 
 <div class="left"><?php print $lang['userpass'];?></div>
 <div class="right">

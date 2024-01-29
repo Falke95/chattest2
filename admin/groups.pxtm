@@ -164,14 +164,19 @@ if (isset($_POST['deletegroup'])) {
                 <th>Action</th>
             </tr>
             <?php foreach ($groups as $group) : ?>
-                <tr>
-                    <td><?php echo $group['id']; ?></td>
-                    <td><?php echo $group['name']; ?></td>
-                    <td>
-                        <a href="admin.php?q=groups&editgroup=1&group_id=<?php echo $group['id']; ?>">Bearbeiten</a> |
-                        <a href="admin.php?q=groups&deletegroup=1&group_id=<?php echo $group['id']; ?>">Löschen</a>
-                    </td>
-                </tr>
+              <tr>
+                <td><?php echo $group['id']; ?></td>
+                <td><?php echo $group['name']; ?></td>
+                <td>
+                    <a href="admin.php?q=groups&editgroup=1&group_id=<?php echo $group['id']; ?>">Bearbeiten</a> |
+
+                    <!-- Löschformular für jede Gruppe -->
+                    <form action="admin.php?q=groups" method="post" style="display: inline;">
+                        <input type="hidden" name="group_id" value="<?php echo $group['id']; ?>">
+                        <input type="submit" name="deletegroup" value="Löschen">
+                    </form>
+                </td>
+            </tr>
             <?php endforeach; ?>
         </table>
         <hr>

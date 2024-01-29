@@ -136,3 +136,14 @@ input[type=button]{opacity:0.8} input[type=button]:hover{opacity:1}
 input[type=submit]{opacity:0.8} input[type=submit]:hover{opacity:1}
 #menu_box div{opacity:0.8}   #menu_box div:hover{opacity:1}
 .menu_dash{opacity:0.8}      .menu_dash:hover{opacity:1}
+
+
+#editGroupForm {
+    display: none;
+    background-color: #f2f2f2; /* Hintergrundfarbe in Grau */
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+}

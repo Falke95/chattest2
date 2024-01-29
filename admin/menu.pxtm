@@ -22,6 +22,7 @@
 <div class="svg_sett" onclick="self.location.href='admin.php?q=settings'"><?php print $lang['settings'];?></div>
 <div class="svg_addt" onclick="self.location.href='admin.php?q=addt'"><?php print $lang['addt'];?></div>
 <div class="svg_styl" onclick="self.location.href='admin.php?q=style'"><?php print $lang['style'];?></div>
+<div class="svg_styl" onclick="self.location.href='admin.php?q=emotion'"><?php print $lang['emotion'];?></div>
 <div class="svg_vpro" onclick="self.location.href='admin.php?q=groups'"><?php print $lang['groups'];?></div>
 <div class="svg_room" onclick="self.location.href='admin.php?q=rooms'"><?php print $lang['rooms'];?></div>
 <div class="svg_mssg" onclick="self.location.href='admin.php?q=messages'"><?php print $lang['messages'];?></div>

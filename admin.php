@@ -1,7 +1,7 @@
 <?php
 
-ini_set('display_errors', 1);
 error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 require_once 'config.php';
 require_once 'incl/main.php';
@@ -168,6 +168,36 @@ $id=(int)$_GET['ban']; $period=(int)$_GET['period'];
 neutral_query('UPDATE '.$dbss['prfx']."_ban SET timestamp=timestamp+$period WHERE id=$id");
 redirect('admin.php?q=logs&ok='.$timestamp); }
 
+if(isset($_POST['emotion'])){
+    // This code will be executed when the emoticon form is submitted
+    $uploadedFileName = $_FILES["emoticon"]["name"];
+    $smileyCode = ':' . pathinfo($uploadedFileName, PATHINFO_FILENAME) . ':';
+    $newSmileyFileName = $uploadedFileName;
+
+    // Update emoticons.css in the main directory
+    $cssContent = file_get_contents('emoticons.css'); // Path to the CSS file in the main directory
+    $newCssRule = ".svg_emo_" . str_replace(":", "", $smileyCode) . " {
+        background-image: url('$newSmileyFileName');
+        background-repeat: no-repeat;
+        width: 24px;
+        height: 24px;
+    }";
+    $cssContent .= "\n$newCssRule";
+    file_put_contents('emoticons.css', $cssContent);
+
+    // Update emocodes.php in the main directory
+    $emoticons = array(); // Empty emoticons array to recreate it
+    $emoticons[] = "';";
+
+    $emoticonsContent = file_get_contents('emocodes.php'); // Path to the emocodes.php file in the main directory
+    $emoticonsContent = str_replace('<?php', '', $emoticonsContent); // Remove '<?php' at the beginning
+    $emoticonsContent = str_replace(';', '', $emoticonsContent); // Remove trailing ';'
+    eval($emoticonsContent); // Executes the PHP code in the emocodes.php file
+
+    $emoticons[] = "$smileyCode svg_emo_" . str_replace(":", "", $smileyCode) . " 1";
+    file_put_contents('emocodes.php', '<?php ' . var_export($emoticons, true) . ';');
+    redirect('admin.php?q=emotion&ok='.$timestamp);
+}
 /* --- */
 
 if(isset($_POST['edituser']) && isset($_POST['email'])){
@@ -402,12 +432,13 @@ if(isset($_GET['groups'])){
 if(isset($_POST['updategroup'])){
     // Grundlegende Gruppeninformationen
     $groupData = [
-        'name' => mysqli_real_escape_string($mysqli, $_POST['group_name']),
-        'welcome' => mysqli_real_escape_string($mysqli, $_POST['welcome']),
+        'name' => neutral_escape($_POST['group_name'], 255, 'str'),
+        'welcome' => neutral_escape($_POST['welcome'], 255, 'str'),
         'link' => intval($_POST['link']),
         'vlnk' => intval($_POST['vlnk']),
-        'color' => mysqli_real_escape_string($mysqli, $_POST['color'])
+        'color' => neutral_escape($_POST['color'], 6, 'str')
     ];
+
 
     // Liste der relevanten Berechtigungen
     $relevantPermissions = ['pa', 'pb', 'pc', 'pd', 'pe', 'pf']; // Fügen Sie hier alle Berechtigungen hinzu, die Sie benötigen
@@ -429,13 +460,7 @@ if(isset($_POST['updategroup'])){
     $group_id = intval($_POST['group_id']); // Sicherstellen, dass die group_id vorhanden und eine Zahl ist
     $query = "UPDATE ".$dbss['prfx']."_groups SET $updateString WHERE id = '$group_id'";
 
-    if($mysqli->query($query) === TRUE){
-        // Weiterleitung bei Erfolg
-        redirect('admin.php?q=groups&ok='.$timestamp);
-    } else {
-        // Fehlermeldung
-        echo "Fehler beim Aktualisieren der Gruppe: " . $mysqli->error;
-    }
+    neutral_query($query);
 }
 
 

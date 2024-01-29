@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>ACP: Smiley Upload</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="admin/<?php print $settings['acp_css']; ?>">
+    <script src="admin/admin.js"></script>
+</head>
+
+<body class="x_global x_overal">
+    <div class="holder">
+        <!-- Smiley Upload Formular -->
+        <h2>Smiley Upload</h2>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="text" name="emotion" placeholder="Enter emotion">
+            <input type="file" name="emoticon" accept="image/*">
+            <button type="submit">Upload Smiley</button>
+        </form>
+    </div>
+
+    <?php include 'admin/menu.pxtm'; ?>
+
+</body>
+
+</html>
