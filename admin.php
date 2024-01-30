@@ -168,56 +168,97 @@ $id=(int)$_GET['ban']; $period=(int)$_GET['period'];
 neutral_query('UPDATE '.$dbss['prfx']."_ban SET timestamp=timestamp+$period WHERE id=$id");
 redirect('admin.php?q=logs&ok='.$timestamp); }
 
+// Hochladen eines neuen Emoticons
+if(isset($_POST['emotion']) && isset($_FILES['emoticon'])) {
+    $targetDirectory = 'img/'; // Pfad zum 'img'-Ordner
 
-if(isset($_POST['emotion'])){
-    // Holen des Dateinamens des hochgeladenen Emoticons
-    $uploadedFileName = stripcslashes($_FILES["emoticon"]["name"]);
+    $uploadedFileName = stripslashes($_FILES["emoticon"]["name"]); // Dateiname des hochgeladenen Emoticons
+    $smileyName = pathinfo($uploadedFileName, PATHINFO_FILENAME); // Name des Emoticons
+    $smileyCode = ':' . $smileyName . ':'; // Smiley-Code
 
-    // Erstellen eines Smiley-Codes basierend auf dem Dateinamen
-    $smileyCode = ':' . pathinfo($uploadedFileName, PATHINFO_FILENAME) . ':';
+    $targetFilePath = $targetDirectory . basename($uploadedFileName); // Ziel-Pfad für das hochgeladene Bild
+    $emoticonsFile = 'emocodes.php'; // Pfad zur 'emocodes.php'
+
+    // Überprüfen, ob die Datei bereits existiert
+    $imageExists = file_exists($targetFilePath);
+    $cssExists = false;
+    if(file_exists('emoticons.css')) {
+        $cssExists = preg_match("/\.svg_emo_" . preg_quote($smileyName, '/') . "\s*{/", file_get_contents('emoticons.css'));
+    }
+
+        if(!$imageExists && !$cssExists) {
+            if(move_uploaded_file($_FILES["emoticon"]["tmp_name"], $targetFilePath)) { // Hochladen der Datei
+                $emoticons = array();
+                if(file_exists($emoticonsFile) && is_readable($emoticonsFile)) {
+                    include $emoticonsFile;
+                }
+
+                // Überprüfen, ob der Smiley-Code bereits verwendet wird
+                $newSmileyEntry = $smileyCode . ' png_emo_' . str_replace(':', '', $smileyName) . ' 1';
+                $isCodeAlreadyUsed = false;
+                foreach ($emoticons as $entry) {
+                    if(strpos($entry, $smileyCode) !== false) {
+                        $isCodeAlreadyUsed = true;
+                        break;
+                    }
+                }
+
+                if(!$isCodeAlreadyUsed) {
+                    $emoticons[] = $newSmileyEntry; // Hinzufügen des neuen Emoticons
+
+                    // Aktualisieren der 'emocodes.php'
+                    $emoticonsContent = "<?php\n\n/*\n\nexample:\n\n...\n\n*/\n\n\$emos_per_page=32;\n\n\$emoticons=array();\n\n";
+                    foreach ($emoticons as $emoticon) {
+                        $emoticonsContent .= "\$emoticons[]='" . $emoticon . "';\n";
+                    }
+                    $emoticonsContent .= "\n?>";
+                    file_put_contents($emoticonsFile, $emoticonsContent);
+
+                    // Aktualisieren der 'emoticons.css'
+                    $cssContent = file_get_contents('emoticons.css');
+                    $base64Image = base64_encode(file_get_contents($targetFilePath));
+                    $cssContent .= "\n.png_emo_" . str_replace(':', '', $smileyName) . " { background-image: url('data:image/png;base64," . $base64Image . "'); }";
+                    file_put_contents('emoticons.css', $cssContent);
+                } else {
+                    echo "Ein Emoticon mit dem Namen '$smileyName' existiert bereits.";
+                }
+            } else {
+                echo "Es gab ein Problem beim Hochladen der Datei.";
+            }
+        } else {
+            echo "Ein Emoticon mit dem Namen '$smileyName' existiert bereits.";
+        }
+    }
     
-    // Speichern des Dateinamens für das neue Smiley
-    $newSmileyFileName = $uploadedFileName;
+// Löschen eines Emoticons
+if(isset($_POST['delete_emoticon'])){
+    $delete_emoticon = $_POST['delete_emoticon'];
 
-    // Laden des Inhalts der existierenden 'emoticons.css'-Datei
-    $cssContent = file_get_contents('emoticons.css');
-
-    // Erstellen eines neuen CSS-Regel-Sets für das Smiley
-    $newCssRule = ".svg_emo_" . str_replace(":", "", $smileyCode) . " {
-        background-image: url('$newSmileyFileName');
-        background-repeat: no-repeat;
-        width: 24px;
-        height: 24px;
-    }";
-    
-    // Hinzufügen der neuen CSS-Regel zum bestehenden CSS-Inhalt
-    $cssContent .= "\n$newCssRule";
-    
-    // Aktualisieren der 'emoticons.css'-Datei mit dem neuen CSS-Inhalt
-    file_put_contents('emoticons.css', $cssContent);
-
-    // Erstellen eines leeren Arrays für Emoticons
+    // Emoticons Array aus der 'emocodes.php' laden
     $emoticons = array();
+    if(file_exists('emocodes.php')) {
+        include 'emocodes.php';
+    }
 
-    // Laden des Inhalts der 'emocodes.php'-Datei
-    $emoticonsContent = file_get_contents('emocodes.php');
+    // Entfernen des Emoticons aus dem Array
+    if(($key = array_search($delete_emoticon, $emoticons)) !== false) {
+        unset($emoticons[$key]);
+        file_put_contents('emocodes.php', '<?php $emoticons = ' . var_export($emoticons, true) . ';');
 
-    // Entfernen von PHP-Tags am Anfang und Semikolons am Ende
-    $emoticonsContent = str_replace('<?php', '', $emoticonsContent);
-    $emoticonsContent = str_replace(';', '', $emoticonsContent);
+        // Entfernen des Bildes aus dem 'img'-Ordner
+        $imageFilePath = 'img/' . str_replace([':', 'svg_emo_'], ['', ''], $delete_emoticon) . '.png';
+        if(file_exists($imageFilePath)) {
+            unlink($imageFilePath);
+        }
 
-    // Ausführen des PHP-Codes in der 'emocodes.php'-Datei
-    eval($emoticonsContent);
-
-    // Hinzufügen des neuen Smiley-Codes zum Array
-    $emoticons[] = "$smileyCode svg_emo_" . str_replace(":", "", $smileyCode) . " 1";
-    
-    // Aktualisieren der 'emocodes.php'-Datei mit dem aktualisierten Emoticons-Array
-    file_put_contents('emocodes.php', '<?php ' . var_export($emoticons, true) . ';');
-    
-    // Weiterleitung zur 'emotion'-Seite mit einem Erfolgsparameter
-    redirect('admin.php?q=emotion&ok='.$timestamp);
+        // Entfernen der CSS-Regel aus 'emoticons.css'
+        $cssContent = file_get_contents('emoticons.css');
+        $cssRulePattern = "/\.svg_emo_" . str_replace([':', 'svg_emo_'], ['', ''], $delete_emoticon) . "\s*{[^}]*}/";
+        $cssContent = preg_replace($cssRulePattern, '', $cssContent);
+        file_put_contents('emoticons.css', $cssContent);
+    }
 }
+
 
 
 

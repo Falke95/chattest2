@@ -1,55 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>ACP: emotion</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="admin/<?php print $settings['acp_css']; ?>">
+    <title>ACP: Emotion</title>
+    <link rel="stylesheet" href="emoticons.css">
     <script src="admin/admin.js"></script>
     <style>
-        /* Füge deine benutzerdefinierten CSS-Stile hier ein, einschließlich Smiley-Stilen */
+        .emoticon-display {
+            display: inline-block;
+            margin: 5px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body class="x_global x_overal">
-    <form action="admin.php" method="post" autocomplete="off">
-        <div class="holder">
-            <h2 onclick="self.location.href='admin.php?q=emotion'" class="pointer svg_styl">
-                <span style="float:right;height:40px;width:40px" class="svg_upup"></span>
-                emotion
-            </h2>
-            <hr>
+    <!-- Emoticon-Upload-Formular -->
+      <form action="admin.php?q=emotion" method="post" enctype="multipart/form-data" autocomplete="off">
+        <h3>Emoticon hochladen</h3>
+        <input type="file" name="emoticon" accept="image/*">
+        <input type="submit" value="Upload Emoticon" name="emotion">
+    </form>
 
-            <!-- Add Smiley Form -->
-            <div>
-                <label for="add_smiley">Add Smiley:</label>
-                <input type="text" id="add_smiley" name="add_smiley" class="x_bcolor_bg" style="margin:1px">
-                <input type="submit" name="submit_add_smiley" class="round4 x_bcolor_bg" style="margin:1px" value="Add">
-            </div>
 
-            <!-- Delete Smiley Form -->
-            <div>
-                <label for="delete_smiley">Delete Smiley:</label>
-                <select id="delete_smiley" name="delete_smiley">
-                    <?php foreach ($smileys as $smiley): ?>
-                        <option value="<?php print $smiley['id']; ?>"><?php print $smiley['name']; ?></option>
-                    <?php endforeach; ?>
-                </select>
-                <input type="submit" name="submit_delete_smiley" class="round4 x_bcolor_bg" style="margin:1px" value="Delete">
-            </div>
+    <!-- Anzeigen der hochgeladenen Emoticons -->
+    <div>
+        <h3>Verfügbare Emoticons</h3>
+        <?php 
+        $emoticons = array();
+        if(file_exists('emocodes.php') && is_readable('emocodes.php')) {
+            include 'emocodes.php';
+        }
 
-            <br><hr>
+        if(is_array($emoticons)) {
+            foreach ($emoticons as $emoticon) {
+                // Ersetzen Sie ':' durch 'svg_emo_' für die CSS-Klasse
+                $cssClass = 'svg_emo_' . str_replace(':', '', $emoticon);
+                echo '<div class="emoticon-display"><span class="' . htmlspecialchars($cssClass) . '"></span><br>' . htmlspecialchars($emoticon) . '</div>';
+            }
+        }
+        ?>
+    </div>
 
-            <input type="submit" class="round4 x_bcolor_bg" style="width:100%;font-weight:bold;height:50px" value="<?php print $lang['submit']; ?>">
-
-        </div>
+    <!-- Löschen eines Emoticons -->
+    <form action="admin.php?q=emotion&delete" method="post">
+        <select name="delete_emoticon">
+            <?php 
+            if(is_array($emoticons)) {
+                foreach ($emoticons as $emoticon) {
+                    echo '<option value="' . htmlspecialchars($emoticon) . '">' . htmlspecialchars($emoticon) . '</option>';
+                }
+            }
+            ?>
+        </select>
+        <input type="submit" value="Delete Emoticon">
     </form>
 
     <?php include 'admin/menu.pxtm'; ?>
-
-    <!-- Your JavaScript code for handling smileys can go here -->
-    <script>
-        // JavaScript code for handling smileys
-        // For example, you can use JavaScript to validate smiley input or provide client-side interactions.
-    </script>
+    <!-- Ihr JavaScript-Code -->
 </body>
 </html>

@@ -1,61 +1,59 @@
+<?php require_once('lang/languages.php'); ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>ACP: emotion</title>
+    <head><title>ACP: <?php print $lang['emotion'];?></title>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="stylesheet" href="admin/<?php print $settings['acp_css']; ?>">
     <script src="admin/admin.js"></script>
-    <style>
-        /* Füge deine benutzerdefinierten CSS-Stile hier ein, einschließlich Smiley-Stilen */
-    </style>
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="admin/<?php print $settings['acp_css'];?>">
+    <script src="admin/admin.js"></script>
 </head>
+
 <body class="x_global x_overal">
+
+<div class="holder">
     <form action="admin.php?q=emotion" method="post" enctype="multipart/form-data" autocomplete="off">
-        <div class="holder">
-            <h2 onclick="self.location.href='admin.php?q=emotion'" class="pointer svg_styl">
-                <span style="float:right;height:40px;width:40px" class="svg_upup"></span>
-                emotion
-            </h2>
-            <hr>
-            
-            <!-- Emotion upload form -->
-            <div>
-                <input type="file" name="emoticon" accept=".svg,.png,.jpg,.jpeg" class="x_bcolor_bg" style="margin:1px">
-                <input type="submit" name="emotion" class="round4 x_bcolor_bg" style="margin:1px" value="Upload Emotion">
-            </div>
-            
-            <!-- Add Smiley Form -->
-            <div>
-                <label for="add_smiley">Add Smiley:</label>
-                <input type="text" id="add_smiley" name="add_smiley" class="x_bcolor_bg" style="margin:1px">
-                <input type="submit" name="submit_add_smiley" class="round4 x_bcolor_bg" style="margin:1px" value="Add">
-            </div>
+        <h3>Neues Emoticon hochladen</h3>
+        <label for="emoticon">Wählen Sie ein Emoticon-Bild:</label>
+        <input type="file" name="emoticon" id="emoticon" accept="image/*">
+        <br>
+        <input type="submit" value="Upload Emoticon" name="emotion">
+    </form>
 
-            <!-- Delete Smiley Form -->
-            <div>
-                <label for="delete_smiley">Delete Smiley:</label>
-                <select id="delete_smiley" name="delete_smiley">
-                    <?php foreach ($smileys as $smiley): ?>
-                        <option value="<?php print $smiley['id']; ?>"><?php print $smiley['name']; ?></option>
-                    <?php endforeach; ?>
-                </select>
-                <input type="submit" name="submit_delete_smiley" class="round4 x_bcolor_bg" style="margin:1px" value="Delete">
-            </div>
+    <!-- Anzeigen der hochgeladenen Emoticons -->
+    <div>
+        <h3>Verfügbare Emoticons</h3>
+        <?php 
+        $emoticons = array(); // Initialisieren Sie $emoticons als leeres Array
+        if(file_exists('emocodes.php') && is_readable('emocodes.php')) {
+            include 'emocodes.php';
+        }
 
-            <br><hr>
+        if(is_array($emoticons)) {
+            foreach ($emoticons as $emoticon) {
+                echo '<div>' . htmlspecialchars($emoticon) . '</div>';
+            }
+        }
+        ?>
+    </div>
 
-            <input type="submit" class="round4 x_bcolor_bg" style="width:100%;font-weight:bold;height:50px" value="<?php print $lang['submit']; ?>">
-
-        </div>
+    <!-- Löschen eines Emoticons -->
+    <form action="admin.php?q=emotion&delete" method="post">
+        <select name="delete_emoticon">
+            <?php 
+            if(is_array($emoticons)) {
+                foreach ($emoticons as $emoticon) {
+                    echo '<option value="' . htmlspecialchars($emoticon) . '">' . htmlspecialchars($emoticon) . '</option>';
+                }
+            }
+            ?>
+        </select>
+        <input type="submit" value="Delete Emoticon">
     </form>
 
     <?php include 'admin/menu.pxtm'; ?>
-
-    <!-- Your JavaScript code for handling smileys can go here -->
-    <script>
-        // JavaScript code for handling smileys
-        // For example, you can use JavaScript to validate smiley input or provide client-side interactions.
-    </script>
+    <!-- Ihr JavaScript-Code -->
 </body>
 </html>
