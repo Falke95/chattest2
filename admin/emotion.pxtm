@@ -1,46 +1,52 @@
-<?php require_once('lang/languages.php'); ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <head><title>ACP: <?php print $lang['emotion'];?></title>
+    <title>ACP: <?php print $lang['emotion'];?></title>
     <meta charset="utf-8">
     <script src="admin/admin.js"></script>
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="admin/<?php print $settings['acp_css'];?>">
     <script src="admin/admin.js"></script>
+    <style>
+        /* Stil für die Eingabefelder */
+        input[type="text"],
+        input[type="file"] {
+            background-color: #f2f2f2; /* Graue Hintergrundfarbe */
+            border: 1px solid #ccc; /* Grauer Rahmen */
+            padding: 8px; /* Innenabstand */
+            border-radius: 4px; /* Abgerundete Ecken */
+            margin-bottom: 10px; /* Abstand zwischen den Eingabefeldern */
+            color: black; /* Textfarbe auf Schwarz setzen */
+        }
+
+        /* Stil für das Löschen-Feld */
+        select[name="delete_emoticon"] {
+            background-color: #f2f2f2; /* Graue Hintergrundfarbe */
+            border: 1px solid #ccc; /* Grauer Rahmen */
+            padding: 8px; /* Innenabstand */
+            border-radius: 4px; /* Abgerundete Ecken */
+            color: black; /* Textfarbe auf Schwarz setzen */
+        }
+    </style>
 </head>
 
 <body class="x_global x_overal">
 
 <div class="holder">
     <form action="admin.php?q=emotion" method="post" enctype="multipart/form-data" autocomplete="off">
-        <h3>Neues Emoticon hochladen</h3>
-        <label for="emoticon">Wählen Sie ein Emoticon-Bild:</label>
+        <h3><?php print $lang['upload_emoticon'];?></h3>
+        <label for="emoticon"><?php print $lang['select_emoticon_image'];?>:</label>
         <input type="file" name="emoticon" id="emoticon" accept="image/*">
         <br>
-        <input type="submit" value="Upload Emoticon" name="emotion">
+        <label for="smileyName">Emoticon Name (optional):</label>
+        <input type="text" name="smileyName" id="smileyName">
+        <br>
+        <input type="submit" value="<?php print $lang['upload_emoticon'];?>" name="emotion">
     </form>
-
-    <!-- Anzeigen der hochgeladenen Emoticons -->
-    <div>
-        <h3>Verfügbare Emoticons</h3>
-        <?php 
-        $emoticons = array(); // Initialisieren Sie $emoticons als leeres Array
-        if(file_exists('emocodes.php') && is_readable('emocodes.php')) {
-            include 'emocodes.php';
-        }
-
-        if(is_array($emoticons)) {
-            foreach ($emoticons as $emoticon) {
-                echo '<div>' . htmlspecialchars($emoticon) . '</div>';
-            }
-        }
-        ?>
-    </div>
 
     <!-- Löschen eines Emoticons -->
     <form action="admin.php?q=emotion&delete" method="post">
+        <h3><?php print $lang['delete_emoticon'];?></h3>
         <select name="delete_emoticon">
             <?php 
             if(is_array($emoticons)) {
@@ -50,10 +56,24 @@
             }
             ?>
         </select>
-        <input type="submit" value="Delete Emoticon">
+        <br>
+        <input type="submit" value="<?php print $lang['delete_emoticon'];?>" name="delete">
     </form>
+
+    <!-- Anzeigen der hochgeladenen Emoticons -->
+    <div>
+        <h3><?php print $lang['available_emoticons'];?></h3>
+        <?php 
+        if(is_array($emoticons)) {
+            foreach ($emoticons as $emoticon) {
+                echo '<div>' . htmlspecialchars($emoticon) . '</div>';
+            }
+        }
+        ?>
+    </div>
 
     <?php include 'admin/menu.pxtm'; ?>
     <!-- Ihr JavaScript-Code -->
+</div>
 </body>
 </html>

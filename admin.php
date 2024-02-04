@@ -160,136 +160,92 @@ if(isset($_GET['unban'])){ $id=(int)$_GET['unban'];
 neutral_query('DELETE FROM '.$dbss['prfx']."_ban WHERE id=$id");
 redirect('admin.php?q=logs&ok='.$timestamp); }
 
-// Hochladen eines neuen Emoticons
-if(isset($_POST['emotion']) && isset($_FILES['emoticon'])) {
+if (isset($_POST['emotion']) && isset($_FILES['emoticon'])) {
     $targetDirectory = 'img/'; // Pfad zum 'img'-Ordner
-    $emoticonsFile = 'emocodes.php'; // Pfad zur 'emocodes.php'
     $cssFile = 'emoticons.css'; // Pfad zur 'emoticons.css'
 
     $uploadedFileName = stripslashes($_FILES["emoticon"]["name"]); // Dateiname des hochgeladenen Emoticons
-    $smileyName = pathinfo($uploadedFileName, PATHINFO_FILENAME); // Name des Emoticons
-    $smileyCode = ':' . $smileyName . ':'; // Smiley-Code
     $extension = strtolower(pathinfo($uploadedFileName, PATHINFO_EXTENSION)); // Dateierweiterung des hochgeladenen Emoticons
 
     // Erlaubte Dateierweiterungen
     $allowedExtensions = ['svg', 'png', 'jpg', 'gif'];
 
     // Überprüfen, ob die Dateierweiterung erlaubt ist
-    if(!in_array($extension, $allowedExtensions)) {
+    if (!in_array($extension, $allowedExtensions)) {
         echo "Nur Dateien mit den Formaten SVG, PNG, JPG und GIF sind erlaubt.";
         exit; // Beendet das Skript, wenn die Dateierweiterung nicht erlaubt ist
     }
 
-    $targetFilePath = $targetDirectory . basename($uploadedFileName); // Ziel-Pfad für das hochgeladene Bild
+    // Benutzerdefinierten Namen für das Emoticon erhalten
+    $smileyName = isset($_POST["smileyName"]) ? $_POST["smileyName"] : pathinfo($uploadedFileName, PATHINFO_FILENAME);
+    $smileyName = preg_replace('/[^a-zA-Z0-9_]/', '', $smileyName); // Unsichere Zeichen entfernen
+    $smileyCode = ':' . $smileyName . ':'; // Smiley-Code
 
-    // Überprüfen, ob die Datei bereits existiert
-    $imageExists = file_exists($targetFilePath);
-    $cssExists = false;
+    $targetFilePath = $targetDirectory . $smileyName . '.' . $extension; // Ziel-Pfad für das hochgeladene Bild
 
-    if(file_exists($cssFile)) {
-        $cssContent = file_get_contents($cssFile);
-        $cssExists = preg_match("/\.(png|svg|jpg|gif)_emo_" . preg_quote($smileyName, '/') . "\s*{/", $cssContent);
+    // Verschieben der hochgeladenen Datei in den Zielordner
+    if (!move_uploaded_file($_FILES["emoticon"]["tmp_name"], $targetFilePath)) {
+        echo "Fehler beim Hochladen der Datei.";
+        exit;
     }
 
-    if(!$imageExists && !$cssExists) {
-        if ($extension == 'png' || $extension == 'gif') {
-            // Konvertieren von PNG und GIF nach SVG
-            $imageData = file_get_contents($_FILES["emoticon"]["tmp_name"]);
-            $svgCode = 'data:image/svg+xml;base64,' . base64_encode($imageData);
-            $extension = 'svg'; // Ändern der Dateierweiterung auf SVG
+    // Aktualisieren der 'emoticons.css'
+    $cssClass = "emo_" . $smileyName . "_" . $extension; // Verwende den Smiley-Code als CSS-Klassenname
+    $cssContent = file_get_contents($cssFile);
+    $cssContent .= "\n.$cssClass { background-image: url('" . $targetFilePath . "'); background-size: contain; display: inline-block; width: 120px; height: 120px; vertical-align: middle; }\n";
+    file_put_contents($cssFile, $cssContent, FILE_APPEND);
 
-            // Erstellen des SVG-Bilds mit dem Base64-Code
-            $targetFilePath = $targetDirectory . $smileyName . '.' . $extension;
-            file_put_contents($targetFilePath, $svgCode);
-        } else {
-            // Wenn die Datei bereits eine SVG ist, verschieben Sie sie einfach
-            move_uploaded_file($_FILES["emoticon"]["tmp_name"], $targetFilePath);
-        }
+    // Aktualisieren der emocodes.php
+    $emoticonEntry = "':$smileyName: emo_" . $smileyName . "_" . $extension . " 1';"; // Eintrag für emocodes.php
+    $emoticons = array(); // Initialisieren Sie $emoticons als leeres Array
 
-        $emoticons = array();
-        if(file_exists($emoticonsFile) && is_readable($emoticonsFile)) {
-            include $emoticonsFile;
-        }
-
-        // Überprüfen, ob der Smiley-Code bereits verwendet wird
-        $newSmileyEntry = $smileyCode . ' ' . $extension . '_emo_' . str_replace(':', '', $smileyName) . ' 1';
-        $isCodeAlreadyUsed = false;
-        foreach ($emoticons as $entry) {
-            if(strpos($entry, $smileyCode) !== false) {
-                $isCodeAlreadyUsed = true;
-                break;
-            }
-        }
-
-        if(!$isCodeAlreadyUsed) {
-            $emoticons[] = $newSmileyEntry; // Hinzufügen des neuen Emoticons
-
-            // Aktualisieren der 'emocodes.php'
-            $emoticonsContent = "<?php\n\n/*\n\nexample:\n\n...\n\n*/\n\n\$emos_per_page=32;\n\n\$emoticons=array();\n\n";
-            foreach ($emoticons as $emoticon) {
-                $emoticonsContent .= "\$emoticons[]='" . $emoticon . "';\n";
-            }
-            $emoticonsContent .= "\n?>";
-            file_put_contents($emoticonsFile, $emoticonsContent);
-
-            // Aktualisieren der 'emoticons.css' mit dem neuen Hintergrund
-            $cssContent = "\n.svg_emo_" . str_replace(':', '', $smileyName) . " { background-image: url('" . $targetFilePath . "'); }";
-            file_put_contents($cssFile, $cssContent, FILE_APPEND);
-
-            // Aktualisieren der 'emoticons.css' mit dem neuen Hintergrund
-            $cssContent = "\n.svg_emo_" . str_replace(':', '', $smileyName) . " { background-image: url('" . $targetFilePath . "'); }";
-
-            // Fügen Sie die Klasse mit dem Dateinamen und dem gewünschten Hintergrundbild ein
-            $cssContent .= "\n.svg_emo_" . $smileyName . " { background-image: url(\"data:image/svg+xml;base64," . base64_encode(file_get_contents($targetFilePath)) . "\"); }";
-
-            file_put_contents($cssFile, $cssContent, FILE_APPEND);
-
-            // Weiterleitung zur Seite 'emotion' mit Erfolgsmeldung
-            $timestamp = time();
-            header('Location: admin.php?q=emotion&ok=' . $timestamp);
-            exit;
-        } else {
-            echo "Ein Emoticon mit dem Namen '$smileyName' existiert bereits.";
-        }
-    } else {
-        echo "Ein Emoticon mit dem Namen '$smileyName' existiert bereits.";
+    if (file_exists('emocodes.php') && is_readable('emocodes.php')) {
+        include 'emocodes.php';
     }
+
+    $emoticons[] = $emoticonEntry; // Hinzufügen des neuen Emoticon-Eintrags zum Array
+
+    // Aktualisieren der emocodes.php, ohne vorhandene Einträge zu überschreiben
+    $emoticonsContent = '<?php $emoticons[] = ' . $emoticonEntry . ';'; // Hier wird der Eintrag hinzugefügt
+    file_put_contents('emocodes.php', $emoticonsContent, FILE_APPEND);
+
+    echo "Das Emoticon '$smileyName' wurde erfolgreich hinzugefügt.";
 }
-    
-// Löschen eines Emoticons
-if(isset($_POST['delete_emoticon'])){
+
+
+if (isset($_POST['delete_emoticon'])) {
     $delete_emoticon = $_POST['delete_emoticon'];
 
     // Emoticons Array aus der 'emocodes.php' laden
     $emoticons = array();
-    if(file_exists('emocodes.php')) {
+    if (file_exists('emocodes.php')) {
         include 'emocodes.php';
     }
 
     // Entfernen des Emoticons aus dem Array
-    if(($key = array_search($delete_emoticon, $emoticons)) !== false) {
+    if (($key = array_search($delete_emoticon, $emoticons)) !== false) {
         unset($emoticons[$key]);
         file_put_contents('emocodes.php', '<?php $emoticons = ' . var_export($emoticons, true) . ';');
 
         // Entfernen des Bildes aus dem 'img'-Ordner
-        $imageFilePath = 'img/' . str_replace([':', 'svg_emo_'], ['', ''], $delete_emoticon) . '.png';
-        if(file_exists($imageFilePath)) {
+        $imageFilePath = 'img/' . str_replace([':', 'emo_'], ['', ''], $delete_emoticon) . '.png';
+        if (file_exists($imageFilePath)) {
             unlink($imageFilePath);
         }
 
         // Entfernen der CSS-Regel aus 'emoticons.css'
         $cssContent = file_get_contents('emoticons.css');
-        $cssRulePattern = "/\.svg_emo_" . str_replace([':', 'svg_emo_'], ['', ''], $delete_emoticon) . "\s*{[^}]*}/";
+        $cssRulePattern = "/\." . str_replace([':', 'emo_'], ['', ''], $delete_emoticon) . "\s*{[^}]*}/";
         $cssContent = preg_replace($cssRulePattern, '', $cssContent);
         file_put_contents('emoticons.css', $cssContent);
+
+        echo "Das Emoticon '$delete_emoticon' wurde erfolgreich gelöscht.";
+    } else {
+        echo "Das ausgewählte Emoticon konnte nicht gefunden werden.";
     }
 }
 
-
-
-
 /* --- */
-
 if(isset($_POST['edituser']) && isset($_POST['email'])){
 $id=(int)$_POST['edituser']; $ok='';
 
@@ -345,7 +301,7 @@ redirect('admin.php?q=user&id='.$id.$ok);}
 
 if(isset($_POST['fakeuser'])){
 $id=$_POST['fakeuser']; 
-if(isset($_POST['status'])){$status=(int)$_POST['status'];} if($status<1 || $status>5){$status=2;}
+if(isset($_POST['status'])){$status=(int)$_POST['status'];} if($status<1 || $status>6){$status=2;}
 if(isset($_POST['hour_begin'])){$hour_begin=(int)$_POST['hour_begin'];} if($hour_begin<0 || $hour_begin>23){$hour_begin=0;}
 if(isset($_POST['hour_end'])){$hour_end=(int)$_POST['hour_end'];} if($hour_end<1 || $hour_end>24){$hour_end=24;}
 if($hour_end==$hour_begin || $hour_end<$hour_begin){$hour_begin=0;$hour_end=24;}
@@ -482,115 +438,74 @@ if(isset($_GET['delallrooms'])){
 neutral_query('DELETE FROM '.$dbss['prfx'].'_rooms WHERE id>1');
 redirect('admin.php?q=rooms&ok='.$timestamp); }
 
+// Initialisieren von Variablen
+$groupData = [
+    'id' => '',
+    'name' => '',
+    'welcome' => '',
+    'link' => '',
+    'vlnk' => '',
+    'color' => '',
+    'pa' => 0,
+    'pb' => 0,
+    'pc' => 0,
+    'pd' => 0,
+    'pe' => 0,
+    'pf' => 0
+];
+$action = 'add';
 
-if(isset($_POST['addgroup'])){
-    // Grundlegende Gruppeninformationen
-    $groupData = [
-        'id' => $_POST['group_id'], // Beachten Sie, dass 'group_id' in 'id' geändert wurde, um der Datenbankspalte zu entsprechen
-        'name' => $_POST['group_name'],
-        'welcome' => $_POST['welcome'],
-        'link' => $_POST['link'],
-        'vlnk' => $_POST['vlnk'],
-        'color' => $_POST['color']
-    ];
-
-    // Liste der relevanten Berechtigungen
-    $relevantPermissions = ['pa', 'pb', 'pc', 'pd', 'pe', 'pf']; // Fügen Sie hier alle Berechtigungen hinzu, die Sie benötigen
-
-    foreach ($relevantPermissions as $permKey) {
-        $groupData[$permKey] = isset($_POST[$permKey]) ? 1 : 0;
-    }
-
-    // Erstellen der SQL-Anweisung
-    $columns = implode(', ', array_keys($groupData));
-    $values = implode(', ', array_map(function($value) { return is_numeric($value) ? $value : "'$value'"; }, array_values($groupData)));
-    $query = "INSERT INTO ".$dbss['prfx']."_groups ($columns) VALUES ($values)";
-
-    neutral_query($query);
-    redirect('admin.php?q=groups&ok='.$timestamp);
-}
-
-
-// Read groups
-if(isset($_GET['groups'])){
-    $query = "SELECT * FROM ".$dbss['prfx']."_groups";
+// Überprüfen, ob eine Gruppe zur Bearbeitung ausgewählt wurde
+if (isset($_GET['editgroup'])) {
+    $group_id = neutral_escape($_GET['editgroup'], 10, 'int');
+    $query = "SELECT * FROM " . $dbss['prfx'] . "_groups WHERE id = $group_id";
     $result = neutral_query($query);
-    while($row = $result->fetch_assoc()){
-        echo $row['name'];
+    if ($group = mysqli_fetch_assoc($result)) {
+        $groupData = $group;
+        $action = 'edit';
     }
 }
-if(isset($_POST['updategroup'])){
-    // Grundlegende Gruppeninformationen
-    $groupData = [
-        'name' => neutral_escape($_POST['group_name'], 255, 'str'),
-        'welcome' => neutral_escape($_POST['welcome'], 255, 'str'),
-        'link' => intval($_POST['link']),
-        'vlnk' => intval($_POST['vlnk']),
-        'color' => neutral_escape($_POST['color'], 6, 'str')
-    ];
 
+// Gruppe aktualisieren oder hinzufügen
+if (isset($_POST['updategroup']) || isset($_POST['addgroup'])) {
+    $group_id = isset($_POST['group_id']) ? neutral_escape($_POST['group_id'], 10, 'int') : 0;
+    $name = neutral_escape($_POST['group_name'], 255, 'str');
+    $welcome = neutral_escape($_POST['welcome'], 1000, 'txt');
+    $link = neutral_escape($_POST['link'], 255, 'str');
+    $vlnk = neutral_escape($_POST['vlnk'], 255, 'str');
+    $color = neutral_escape($_POST['color'], 7, 'str');
+    $pa = isset($_POST['pa']) ? 1 : 0;
+    $pb = isset($_POST['pb']) ? 1 : 0;
+    $pc = isset($_POST['pc']) ? 1 : 0;
+    $pd = isset($_POST['pd']) ? 1 : 0;
+    $pe = isset($_POST['pe']) ? 1 : 0;
+    $pf = isset($_POST['pf']) ? 1 : 0;
 
-    // Liste der relevanten Berechtigungen
-    $relevantPermissions = ['pa', 'pb', 'pc', 'pd', 'pe', 'pf']; // Fügen Sie hier alle Berechtigungen hinzu, die Sie benötigen
-
-    foreach ($relevantPermissions as $permKey) {
-        $groupData[$permKey] = isset($_POST[$permKey]) ? 1 : 0;
+    if (isset($_POST['updategroup'])) {
+        // Aktualisieren-Logik
+        $query = "UPDATE " . $dbss['prfx'] . "_groups SET name = '$name', welcome = '$welcome', link = '$link', vlnk = '$vlnk', color = '$color', pa = $pa, pb = $pb, pc = $pc, pd = $pd, pe = $pe, pf = $pf WHERE id = $group_id";
+    } else {
+        // Hinzufügen-Logik
+        $query = "INSERT INTO " . $dbss['prfx'] . "_groups (name, welcome, link, vlnk, color, pa, pb, pc, pd, pe, pf) VALUES ('$name', '$welcome', '$link', '$vlnk', '$color', $pa, $pb, $pc, $pd, $pe, $pf)";
     }
-
-    // Erstellen der SQL-Anweisung für das Update
-    $updateParts = [];
-    foreach($groupData as $key => $value) {
-        if (is_numeric($value)) {
-            $updateParts[] = "$key = $value";
-        } else {
-            $updateParts[] = "$key = '$value'";
-        }
-    }
-    $updateString = implode(', ', $updateParts);
-    $group_id = intval($_POST['group_id']); // Sicherstellen, dass die group_id vorhanden und eine Zahl ist
-    $query = "UPDATE ".$dbss['prfx']."_groups SET $updateString WHERE id = '$group_id'";
-
     neutral_query($query);
+
+    header('Location: admin.php?q=groups&success=' . time());
+    exit;
 }
 
 
-// Delete group
-if(isset($_POST['deletegroup'])){
-    $group_id = $_POST['group_id'];
-    $query = "DELETE FROM ".$dbss['prfx']."_groups WHERE id = $group_id";
+// Gruppe löschen
+if (isset($_POST['deletegroup'])) {
+    $group_id = neutral_escape($_POST['group_id'], 10, 'int');
+    // Verwende $dbss['prfx'] für den Tabellennamen
+    $query = "DELETE FROM " . $dbss['prfx'] . "_groups WHERE id = $group_id";
     neutral_query($query);
-    redirect('admin.php?q=groups&ok='.$timestamp);
+
+    header('Location: admin.php?q=groups&ok=' . time());
+    exit;
 }
 
-if(isset($_GET['editgroup'])){
-    $group_id = $_GET['group_id'];
-    $query = "SELECT * FROM ".$dbss['prfx']."_groups WHERE id = $group_id";
-    $result = neutral_query($query);
-    $group = $result->fetch_assoc();
-
-    echo '<form method="post" action="admin.php?q=groups">';
-    echo '<input type="hidden" name="group_id" value="'.$group['id'].'">';
-    echo '<label for="name">Gruppenname:</label>';
-    echo '<input type="text" id="name" name="name" value="'.$group['name'].'">';    
-    echo '<label for="welcome">Willkommens Nachricht:</label>';
-    echo '<textarea id="welcome" name="welcome">'.$group['welcome'].'</textarea>';
-    echo '<label for="link">Link:</label>';
-    echo '<input type="number" id="link" name="link" value="'.$group['link'].'">';
-    echo '<label for="vlnk">Vlnk:</label>';
-    echo '<input type="number" id="vlnk" name="vlnk" value="'.$group['vlnk'].'">';
-    echo '<label for="color">Gruppen Farbe:</label>';
-    echo '<input type="text" id="color" name="color" value="'.$group['color'].'">';
-    
-    $relevantPermissions = ['pa', 'pb', 'pc', 'pd', 'pe', 'pf']; // Liste der relevanten Berechtigungen
-    
-    foreach ($relevantPermissions as $permission) {
-        echo '<label for="' . $permission . '">GruppenRechte ' . strtoupper($permission) . ':</label>';
-        echo '<input type="checkbox" id="' . $permission . '" name="' . $permission . '" value="1" ' . ($group[$permission] ? 'checked' : '') . '>';
-    }
-    
-    echo '<input type="submit" name="updategroup" value="Update Group">';
-    echo '</form>';
-}
 
 /* --- */
 

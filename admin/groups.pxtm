@@ -168,7 +168,7 @@ if (isset($_POST['deletegroup'])) {
                 <td><?php echo $group['id']; ?></td>
                 <td><?php echo $group['name']; ?></td>
                 <td>
-                    <a href="admin.php?q=groups&editgroup=1&group_id=<?php echo $group['id']; ?>">Bearbeiten</a> |
+                    <a href="admin.php?q=groups&editgroup=<?php echo $group['id']; ?>">Bearbeiten</a> |
 
                     <!-- Löschformular für jede Gruppe -->
                     <form action="admin.php?q=groups" method="post" style="display: inline;">

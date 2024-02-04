@@ -19,7 +19,7 @@ $username=neutral_escape($username,64,'str');
 $usergroup=(int)$mtoken[2];
 
 $status=(int)$_POST['status'];
-if($status<1 || $status>5){print 'error 004';die();}
+if($status<1 || $status>6){print 'error 004';die();}
 
 // check ban
 if($userid>1){

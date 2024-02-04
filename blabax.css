@@ -56,7 +56,13 @@ input,select,textarea{box-sizing:border-box;border-width:0;border-radius:0;font-
 .status3{background-color:#FFC107;}
 .status4{background-color:#9C27B0;}
 .status5{background-color:#F44336;}
-
+.status6 {
+    background-image: url('img/onair.gif');
+    background-size: 100% 100%; /* Vollständige Größe des Bildes */
+    background-repeat: no-repeat;
+    width: 10px; /* Breite des Statusfelds anpassen */
+    height: 10px; /* Höhe des Statusfelds anpassen */
+}
 .top_area{position:fixed;top:0;left:0;right:0;height:28px;line-height:25px;}
 .top_button{margin:2px;width:40px;height:36px;position:relative;top:-5px;cursor:pointer;background-size:115%;background-repeat:no-repeat;background-position:center center}
 #top_unread{position:fixed;left:52px;top:11px;width:8px;height:8px;border-radius:100%;cursor:pointer;display:none;animation:shortblink .8s ease-in-out infinite}

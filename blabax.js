@@ -499,15 +499,48 @@ de('user_motto').title=uxtra_motto[x]
 // ----------
 
 function hide_user(){
-if(!ext_usr_id){return}
-pu='p'+ext_usr_id;rmb_txt('u_hide')
-de('kick_ban').style.display='none'
-de('user_buttons').style.display='none'
-de(pu).style.display='none'
-uin.style.display='none'
-for(i in pmnotifications){if(pmnotifications[i]==ext_usr_id){pmnotifications.splice(i,1)}}
-srv_usr_id=0; ext_usr_id=0; active_usrname=''
-pholder();inp.readOnly=false;inp_focus()}
+    if(!ext_usr_id) {
+        return;
+    }
+    
+    // Hier fügen Sie die Bedingung für pa und pb hinzu
+    if(!checkGroupPermissions()) {
+        return;
+    }
+    
+    pu = 'p' + ext_usr_id;
+    rmb_txt('u_hide');
+    de('kick_ban').style.display = 'none';
+    de('user_buttons').style.display = 'none';
+    de(pu).style.display = 'none';
+    uin.style.display = 'none';
+    for(i in pmnotifications) {
+        if(pmnotifications[i] == ext_usr_id) {
+            pmnotifications.splice(i, 1);
+        }
+    }
+    srv_usr_id = 0;
+    ext_usr_id = 0;
+    active_usrname = '';
+    pholder();
+    inp.readOnly = false;
+    inp_focus();
+}
+
+// Funktion zur Überprüfung der Gruppenberechtigungen
+function checkGroupPermissions() {
+    // Annahme: Hier erhalten Sie Informationen zur Gruppe des Benutzers, z.B. aus einer Datenbank.
+    var userGroupHasPa = true; // Setzen Sie auf true, wenn die Gruppe pa hat.
+    var userGroupHasPb = true; // Setzen Sie auf true, wenn die Gruppe pb hat.
+    
+    if (userGroupHasPa && userGroupHasPb) {
+        return true;
+    } else {
+        // Hier können Sie eine Meldung anzeigen oder weitere Aktionen ausführen, wenn die Berechtigungen fehlen.
+        alert('Die Gruppe hat nicht die erforderlichen Berechtigungen (pa und pb).');
+        return false;
+    }
+}
 
 // ----------
 

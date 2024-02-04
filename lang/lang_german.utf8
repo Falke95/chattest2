@@ -72,6 +72,7 @@ $lang['status2']       = '⚑ Abwesend';
 $lang['status3']       = '☂ Belegt';
 $lang['status4']       = '☘ Nicht verfügbar';
 $lang['status5']       = '✖ Nicht stören';
+$lang['status6']       = '☻ ON AIR';
 $lang['status0']       = 'Unsichtbar';
 $lang['rooms']         = 'Räume';
 $lang['bgsnd']         = 'Sound-Benachrichtigungen für Nachrichten, die im Hintergrund empfangen werden.';

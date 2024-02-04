@@ -85,12 +85,22 @@ if('serviceWorker' in navigator){navigator.serviceWorker.register('pwa.js').then
 <small id="user_motto"></small></div></div>
 
 <div id="user_buttons" class="user_butt x_bcolor_x">
-<span title="<?php print $lang['un_mute'];?>" class="x_circle x_bcolor_z pointer svg_mute" id="ig_unig" onclick="shoop(this,1,100);ignore_set()">&nbsp;</span>
-<?php if($uid==1){ ?><span onclick="shoop(this,1,100);if(blockuserchange<1){hoop('kick_ban',1)}" title="<?php print $lang['kick'].'/'.$lang['ban'];?>" class="x_circle x_bcolor_z pointer svg_kick">&nbsp;</span><?php } ?>
+    <span title="<?php print $lang['un_mute'];?>" class="x_circle x_bcolor_z pointer svg_mute" id="ig_unig" onclick="shoop(this,1,100);ignore_set()">&nbsp;</span>
+    
+    <?php 
+    // Fügen Sie die Bedingung für die Kick- und Ban-Schaltflächen hinzu
+    if($uid == 1 || (isset($result) && mysqli_num_rows($result) > 0)) { 
+    ?>
+    <span onclick="shoop(this,1,100);if(blockuserchange<1){hoop('kick_ban',1)}" title="<?php print $lang['kick'].'/'.$lang['ban'];?>" class="x_circle x_bcolor_z pointer svg_kick">&nbsp;</span>
+    <?php } ?>
 </div>
 
+
 <div id="kick_ban" class="user_butt x_all_rounded x_bcolor_x">
-<?php if($uid==1){ ?>
+ <?php 
+    // Fügen Sie die Bedingung für die Kick- und Ban-Schaltflächen hinzu
+    if($uid == 1 || (isset($result) && mysqli_num_rows($result) > 0)) { 
+?>
 <span onclick="ban_user(0)" title="<?php print $lang['kick'];?>" class="x_circle x_bcolor_z pointer svg_kick">&nbsp;</span>
 <span onclick="ban_user(1)" title="<?php print $lang['ban'];?>: ID" class="x_circle x_bcolor_z pointer svg_bann"><small style="padding:4px;font-size:10px;position:relative;top:-10px" class="x_overal">&nbsp;id&nbsp;</small></span>
 <span onclick="ban_user(2)" title="<?php print $lang['ban'];?>: ID+IP" class="x_circle x_bcolor_z pointer svg_bann"><small style="padding:4px;font-size:10px;position:relative;top:-10px" class="x_overal">&nbsp;id/ip&nbsp;</small></span>
@@ -122,14 +132,15 @@ print '<b onclick="if(!obj2hoop){lie.style.display=\'none\';sti.style.display=\'
 <div id="hidescreen_tran" class="x_overal" onclick="this.style.display='none';if(pan.style.display=='block'){pab.style.display='none';hoop(pan,0)} if(ons.style.display=='block'){hoop(ons,0)} inp_focus()"></div>
 
 <div id="statuses" class="x_bcolor_y x_all_rounded">
-<div style="height:2px"></div>
+<div style="height:10px"></div>
 <?php $statp=explode(',',$lang['statusp']);?>
 <div onclick="change_status(1,'<?php print str_replace($statp,'',$lang['status1']);?>')"><i class="pchat_notify status1"></i><?php print $lang['status1'];?></div>
 <div onclick="change_status(2,'<?php print str_replace($statp,'',$lang['status2']);?>')"><i class="pchat_notify status2"></i><?php print $lang['status2'];?></div>
 <div onclick="change_status(3,'<?php print str_replace($statp,'',$lang['status3']);?>')"><i class="pchat_notify status3"></i><?php print $lang['status3'];?></div>
 <div onclick="change_status(4,'<?php print str_replace($statp,'',$lang['status4']);?>')"><i class="pchat_notify status4"></i><?php print $lang['status4'];?></div>
 <div onclick="change_status(5,'<?php print str_replace($statp,'',$lang['status5']);?>')"><i class="pchat_notify status5"></i><?php print $lang['status5'];?></div>
-<div style="height:8px"></div>
+<div onclick="change_status(6,'<?php print str_replace($statp,'',$lang['status6']);?>')"><i class="pchat_notify status6"></i><?php print $lang['status6'];?></div>
+<div style="height:10px"></div>
 </div>
 
 <!-- PANEL BEGIN -->

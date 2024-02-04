@@ -128,6 +128,7 @@ $regdate=gmdate('Y-m-d H:i:s',$user['timestamp']+$settings['acp_offset']*60);
 <option value="3"><?php print $lang['status3'];?></option>
 <option value="4"><?php print $lang['status4'];?></option>
 <option value="5"><?php print $lang['status5'];?></option>
+<option value="6"><?php print $lang['status6'];?></option>
 </select>
 
 <select  name="hour_begin"  class="x_accent_bb" style="width:20%">
