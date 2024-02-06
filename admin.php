@@ -456,11 +456,12 @@ $groupData = [
 $action = 'add';
 
 // Überprüfen, ob eine Gruppe zur Bearbeitung ausgewählt wurde
-if (isset($_GET['editgroup'])) {
-    $group_id = neutral_escape($_GET['editgroup'], 10, 'int');
+if (isset($_GET['editgroup']) && isset($_GET['group_id'])) {
+    $group_id = (int)$_GET['group_id'];
     $query = "SELECT * FROM " . $dbss['prfx'] . "_groups WHERE id = $group_id";
     $result = neutral_query($query);
     if ($group = mysqli_fetch_assoc($result)) {
+        // Gruppendaten wurden geladen und stehen zur Bearbeitung bereit
         $groupData = $group;
         $action = 'edit';
     }
