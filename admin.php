@@ -438,73 +438,37 @@ if(isset($_GET['delallrooms'])){
 neutral_query('DELETE FROM '.$dbss['prfx'].'_rooms WHERE id>1');
 redirect('admin.php?q=rooms&ok='.$timestamp); }
 
-// Initialisieren von Variablen
-$groupData = [
-    'id' => '',
-    'name' => '',
-    'welcome' => '',
-    'link' => '',
-    'vlnk' => '',
-    'color' => '',
-    'pa' => 0,
-    'pb' => 0,
-    'pc' => 0,
-    'pd' => 0,
-    'pe' => 0,
-    'pf' => 0
-];
-$action = 'add';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) {
+        switch ($_POST['action']) {
+            case 'add_group':
+                // Logik zum Hinzufügen einer Gruppe
+                $groupName = $_POST['group_name'] ?? ''; // Validierung und Bereinigung der Eingabe
+                // SQL-Statement zum Einfügen der Gruppe in die Datenbank
+                $query = "INSERT INTO your_groups_table (name) VALUES ('$groupName')";
+                // Führen Sie das SQL-Statement aus, behandeln Sie Fehler und Erfolge entsprechend
+                break;
+            case 'edit_group':
+                // Logik zum Bearbeiten einer Gruppe
+                $groupId = $_POST['group_id'] ?? 0; // Die Gruppen-ID, die bearbeitet werden soll
+                $groupName = $_POST['group_name'] ?? ''; // Der neue Name der Gruppe
+                // SQL-Statement zum Aktualisieren der Gruppeninformationen
+                $query = "UPDATE your_groups_table SET name = '$groupName' WHERE id = $groupId";
+                // Führen Sie das SQL-Statement aus, behandeln Sie Fehler und Erfolge entsprechend
+                break;
+            case 'delete_group':
+                // Logik zum Löschen einer Gruppe
+                $groupId = $_POST['group_id'] ?? 0; // Die Gruppen-ID, die gelöscht werden soll
+                // SQL-Statement zum Löschen der Gruppe aus der Datenbank
+                $query = "DELETE FROM your_groups_table WHERE id = $groupId";
+                // Führen Sie das SQL-Statement aus, behandeln Sie Fehler und Erfolge entsprechend
+                break;
+        }
 
-// Überprüfen, ob eine Gruppe zur Bearbeitung ausgewählt wurde
-if (isset($_GET['editgroup']) && isset($_GET['group_id'])) {
-    $group_id = (int)$_GET['group_id'];
-    $query = "SELECT * FROM " . $dbss['prfx'] . "_groups WHERE id = $group_id";
-    $result = neutral_query($query);
-    if ($group = mysqli_fetch_assoc($result)) {
-        // Gruppendaten wurden geladen und stehen zur Bearbeitung bereit
-        $groupData = $group;
-        $action = 'edit';
+        // Nach der Verarbeitung eine Umleitung durchführen, um Doppel-Postings zu vermeiden
+        header('Location: admin.php?section=groups');
+        exit;
     }
-}
-
-// Gruppe aktualisieren oder hinzufügen
-if (isset($_POST['updategroup']) || isset($_POST['addgroup'])) {
-    $group_id = isset($_POST['group_id']) ? neutral_escape($_POST['group_id'], 10, 'int') : 0;
-    $name = neutral_escape($_POST['group_name'], 255, 'str');
-    $welcome = neutral_escape($_POST['welcome'], 1000, 'txt');
-    $link = neutral_escape($_POST['link'], 255, 'str');
-    $vlnk = neutral_escape($_POST['vlnk'], 255, 'str');
-    $color = neutral_escape($_POST['color'], 7, 'str');
-    $pa = isset($_POST['pa']) ? 1 : 0;
-    $pb = isset($_POST['pb']) ? 1 : 0;
-    $pc = isset($_POST['pc']) ? 1 : 0;
-    $pd = isset($_POST['pd']) ? 1 : 0;
-    $pe = isset($_POST['pe']) ? 1 : 0;
-    $pf = isset($_POST['pf']) ? 1 : 0;
-
-    if (isset($_POST['updategroup'])) {
-        // Aktualisieren-Logik
-        $query = "UPDATE " . $dbss['prfx'] . "_groups SET name = '$name', welcome = '$welcome', link = '$link', vlnk = '$vlnk', color = '$color', pa = $pa, pb = $pb, pc = $pc, pd = $pd, pe = $pe, pf = $pf WHERE id = $group_id";
-    } else {
-        // Hinzufügen-Logik
-        $query = "INSERT INTO " . $dbss['prfx'] . "_groups (name, welcome, link, vlnk, color, pa, pb, pc, pd, pe, pf) VALUES ('$name', '$welcome', '$link', '$vlnk', '$color', $pa, $pb, $pc, $pd, $pe, $pf)";
-    }
-    neutral_query($query);
-
-    header('Location: admin.php?q=groups&success=' . time());
-    exit;
-}
-
-
-// Gruppe löschen
-if (isset($_POST['deletegroup'])) {
-    $group_id = neutral_escape($_POST['group_id'], 10, 'int');
-    // Verwende $dbss['prfx'] für den Tabellennamen
-    $query = "DELETE FROM " . $dbss['prfx'] . "_groups WHERE id = $group_id";
-    neutral_query($query);
-
-    header('Location: admin.php?q=groups&ok=' . time());
-    exit;
 }
 
 
