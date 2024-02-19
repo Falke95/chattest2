@@ -2,7 +2,8 @@
 ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
-// Gruppendaten Initialisieren
+
+// Gruppendaten Initialisieren (wird derzeit nicht verwendet)
 $groupData = [
     'name' => '',
     'welcome' => '',
@@ -17,85 +18,37 @@ $groupData = [
     'pf' => 0
 ];
 
-$action = 'add'; // Standardaktion ist das Hinzufügen einer Gruppe
+// Standardaktion ist das Hinzufügen einer Gruppe
+$action = 'add';
 
-// Überprüfen, ob eine Gruppe zur Bearbeitung ausgewählt wurde
-if (isset($_GET['editgroup']) && isset($_GET['group_id'])) {
-    $group_id = (int)$_GET['group_id'];
-    $action = 'edit'; // Aktion ist das Bearbeiten einer vorhandenen Gruppe
-
-    $query = "SELECT * FROM " . $dbss['prfx'] . "_groups WHERE id = $group_id";
-    $result = neutral_query($query);
-    if ($group = mysqli_fetch_assoc($result)) {
-        // Gruppendaten wurden geladen und stehen zur Bearbeitung bereit
-        $groupData = $group;
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['action'])) {
+        switch ($_POST['action']) {
+            case 'add_group':
+                // Hinzufügen einer neuen Gruppe
+                $groupName = $_POST['group_name'] ?? '';
+                $query = "INSERT INTO {$dbss['prfx']}_groups (name) VALUES ('" . neutral_escape($groupName, 255, 'str') . "')";
+                neutral_query($query);
+                break;
+            case 'edit_group':
+                // Bearbeiten einer existierenden Gruppe
+                $groupId = $_POST['group_id'] ?? 0;
+                $groupName = $_POST['group_name'] ?? '';
+                $query = "UPDATE {$dbss['prfx']}_groups SET name = '" . neutral_escape($groupName, 255, 'str') . "' WHERE id = " . neutral_escape($groupId, 10, 'int');
+                neutral_query($query);
+                break;
+            case 'delete_group':
+                // Löschen einer Gruppe
+                $groupId = $_POST['group_id'] ?? 0;
+                $query = "DELETE FROM {$dbss['prfx']}_groups WHERE id = " . neutral_escape($groupId, 10, 'int');
+                neutral_query($query);
+                break;
+        }
+        // Umleitung zur Gruppenliste nach Ausführung der Aktion
+        header('Location: admin.php?section=groups&success=' . time());
+        exit;
     }
 }
-
-// Gruppen aus der Datenbank abrufen
-$query = "SELECT * FROM " . $dbss['prfx'] . "_groups";
-$result = neutral_query($query);
-$groups = [];
-
-while ($row = mysqli_fetch_assoc($result)) {
-    $groups[] = $row;
-}
-
-// Gruppe aktualisieren oder hinzufügen
-if (isset($_POST['updategroup']) || isset($_POST['addgroup'])) {
-    // Variablen mit neutral_escape für Sicherheit bereinigen
-    $group_id = isset($_POST['group_id']) ? (int)$_POST['group_id'] : 0;
-    $name = $_POST['group_name'];
-    $welcome = $_POST['welcome'];
-    $link = (int)$_POST['link'];
-    $vlnk = (int)$_POST['vlnk'];
-    $color = $_POST['color'];
-    $pa = isset($_POST['pa']) ? 1 : 0;
-    $pb = isset($_POST['pb']) ? 1 : 0;
-    $pc = isset($_POST['pc']) ? 1 : 0;
-    $pd = isset($_POST['pd']) ? 1 : 0;
-    $pe = isset($_POST['pe']) ? 1 : 0;
-    $pf = isset($_POST['pf']) ? 1 : 0;
-
-    if ($action === 'edit') {
-        // Aktualisieren-Logik
-        $query = "UPDATE " . $dbss['prfx'] . "_groups SET
-            name = '$name',
-            welcome = '$welcome',
-            link = $link,
-            vlnk = $vlnk,
-            color = '$color',
-            pa = $pa,
-            pb = $pb,
-            pc = $pc,
-            pd = $pd,
-            pe = $pe,
-            pf = $pf
-            WHERE id = $group_id";
-    } else {
-        // Hinzufügen-Logik
-        $query = "INSERT INTO " . $dbss['prfx'] . "_groups (name, welcome, link, vlnk, color, pa, pb, pc, pd, pe, pf)
-            VALUES ('$name', '$welcome', $link, $vlnk, '$color', $pa, $pb, $pc, $pd, $pe, $pf)";
-    }
-    neutral_query($query);
-
-    // Umleitung zur Gruppenliste mit Erfolgsmeldung
-    header('Location: admin.php?q=groups&success=' . time());
-    exit;
-}
-
-// Gruppe löschen
-if (isset($_POST['deletegroup'])) {
-    $group_id = (int)$_POST['group_id'];
-
-    $query = "DELETE FROM " . $dbss['prfx'] . "_groups WHERE id = $group_id";
-    neutral_query($query);
-
-    // Umleitung zur Gruppenliste mit Erfolgsmeldung
-    header('Location: admin.php?q=groups&ok=' . time());
-    exit;
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -104,21 +57,48 @@ if (isset($_POST['deletegroup'])) {
     <title>ACP: Groups</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="admin/<?php echo $settings['acp_css']; ?>">
+    <link rel="stylesheet" href="admin/<?php echo htmlspecialchars($settings['acp_css']); ?>">
     <script src="admin/admin.js"></script>
-    <!-- Ihr vorhandenes CSS und JavaScript -->
 </head>
 <body>
     <div class="holder">
-        <h2><?php echo $action === 'edit' ? 'Gruppe bearbeiten' : 'Neue Gruppe erstellen'; ?></h2>
-        <form action="admin.php?q=groups" method="post">
-            <input type="hidden" name="action" value="<?php echo $action; ?>">
-            <input type="hidden" name="group_id" value="<?php echo htmlspecialchars($groupData['id'] ?? ''); ?>">
-            <!-- Formularelemente für Gruppendaten -->
-            <!-- Ihr Formularcode zum Erstellen oder Bearbeiten von Gruppen -->
+        <!-- Formular zum Hinzufügen einer Gruppe -->
+        <form method="POST">
+            <input type="hidden" name="action" value="add_group">
+            <label for="group_name">Group Name:</label>
+            <input type="text" id="group_name" name="group_name">
+            <input type="submit" value="Add Group">
         </form>
-        <!-- Liste der vorhandenen Gruppen und Aktionen -->
-        <!-- Ihr Code zur Anzeige der Gruppenliste -->
+
+        <h2>Group List</h2>
+        <ul>
+            <?php
+            // Abfrage und Anzeige der Gruppenliste
+            $query = "SELECT * FROM {$dbss['prfx']}_groups";
+            $result = neutral_query($query);
+            while ($row = neutral_fetch_array($result)) {
+                echo '<li>';
+                echo htmlspecialchars($row['name']);
+                echo '</li>';
+                echo '<li>';
+                // Formular zum Bearbeiten einer Gruppe
+                echo '<form method="POST">';
+                echo '<input type="hidden" name="action" value="edit_group">';
+                echo '<input type="hidden" name="group_id" value="' . htmlspecialchars($row['id']) . '">';
+                echo '<input type="text" name="group_name" value="' . htmlspecialchars($row['name']) . '">';
+                echo '<input type="submit" value="Edit Group">';
+                echo '</form>';
+                // Formular zum Löschen einer Gruppe
+                echo '<form method="POST">';
+                echo '<input type="hidden" name="action" value="delete_group">';
+                echo '<input type="hidden" name="group_id" value="' . htmlspecialchars($row['id']) . '">';
+                echo '<input type="submit" value="Delete Group">';
+                echo '</form>';
+                echo '</li>';
+            }
+            ?>
+        </ul>
     </div>
 </body>
 </html>
+

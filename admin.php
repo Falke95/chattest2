@@ -445,7 +445,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Logik zum Hinzufügen einer Gruppe
                 $groupName = $_POST['group_name'] ?? ''; // Validierung und Bereinigung der Eingabe
                 // SQL-Statement zum Einfügen der Gruppe in die Datenbank
-                $query = "INSERT INTO your_groups_table (name) VALUES ('$groupName')";
+                $query = "INSERT INTO {$dbss['prfx']}_groups (name) VALUES ('$groupName')";
                 // Führen Sie das SQL-Statement aus, behandeln Sie Fehler und Erfolge entsprechend
                 break;
             case 'edit_group':
@@ -453,14 +453,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $groupId = $_POST['group_id'] ?? 0; // Die Gruppen-ID, die bearbeitet werden soll
                 $groupName = $_POST['group_name'] ?? ''; // Der neue Name der Gruppe
                 // SQL-Statement zum Aktualisieren der Gruppeninformationen
-                $query = "UPDATE your_groups_table SET name = '$groupName' WHERE id = $groupId";
+                $query = "UPDATE {$dbss['prfx']}_groups SET name = '$groupName' WHERE id = $groupId";
                 // Führen Sie das SQL-Statement aus, behandeln Sie Fehler und Erfolge entsprechend
                 break;
             case 'delete_group':
                 // Logik zum Löschen einer Gruppe
                 $groupId = $_POST['group_id'] ?? 0; // Die Gruppen-ID, die gelöscht werden soll
                 // SQL-Statement zum Löschen der Gruppe aus der Datenbank
-                $query = "DELETE FROM your_groups_table WHERE id = $groupId";
+                $query = "DELETE FROM {$dbss['prfx']}_groups WHERE id = $groupId";
                 // Führen Sie das SQL-Statement aus, behandeln Sie Fehler und Erfolge entsprechend
                 break;
         }
